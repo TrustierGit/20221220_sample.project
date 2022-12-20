@@ -1,0 +1,132 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+
+.user_authority{
+        background-color: #4338ca;
+}
+.admin_authority{
+    background-color: #b91c1c;
+}
+.super_authority{
+    background-color:#09a963;
+}
+
+.base_user_authority{
+    background-color: #223db312;
+}
+
+.base_admin_authority{
+    background-color: #fef2f2;
+}
+
+
+
+.day-sat{
+    color: blue;
+}
+.day-sun,
+.holiday{
+    color: crimson;
+}
+
+.calendar table td{
+padding-top: 0.75rem;
+padding-bottom: 0.75rem;
+padding-left: 1rem;
+padding-right: 1rem;
+--tw-bg-opacity: 1;
+background-color: rgb(255 255 255 / var(--tw-bg-opacity));
+--tw-border-opacity: 1;
+border-color: rgb(0 0 0 / var(--tw-border-opacity));
+border-width: 1px;
+
+}
+.calendar table th{
+    padding-top: 0.75rem;
+    padding-bottom: 0.75rem;
+    padding-left: 1rem;
+    padding-right: 1rem;
+    font-weight: 500;
+    font-size: 2rem;
+    line-height: 2rem;
+    letter-spacing: 0.05em;
+    --tw-border-opacity: 1;
+    border-color: rgb(0 0 0 / var(--tw-border-opacity));
+    border-width: 1px;
+    --tw-bg-opacity: 1;
+    background-color: rgb(168 214 255 / 75%);
+}
+
+.calendar table tr.dummy td{
+    border: none !important;
+    background-color: #eef2ff !important;
+}
+
+
+
+.calendar table .is_reserved{
+    background-color: rgba(255, 7, 3, 0.648);
+    color: aliceblue;
+    font-weight: bold;
+}
+
+.calendar table .reserved_ticket{
+    /* background-color: rgba(255, 7, 3, 0.648); */
+    background-color: rgba(50 199 99 / 75%)!important;
+    color: aliceblue;
+    font-weight: bold;
+}
+
+
+.calendar table td.pastday{
+    background-color:rgb(147 148 153 / 75%) !important;
+    color:#cbcbcbe3 ;
+    /* font-weight: bold; */
+    font-size: 2rem;
+
+}
+
+.calendar table td.day-blank{
+    background-color: rgb(255, 255, 255)!important;
+    color: rgb(6, 6, 6);
+   
+}
+
+/* .calendar table td.holiday{
+    color: crimson !important;
+   
+} */
+
+.day{
+    font-weight: bold;
+    font-size: 2rem;
+}
+
+.modal fade{
+    overflow: visible;
+    position: static;
+}
+
+:disabled{
+    background-color:rgb(147 148 153 / 75%);
+    color:#cbcbcbe3 ;
+}
+:disabled:hover{
+    background-color:rgb(147 148 153 / 75%) !important;
+    color:#cbcbcbe3 ;
+}
+
+.reserved_ticket{
+    background-color: rgba(50 199 99 / 75%)!important;
+    color: aliceblue;
+}
+
+.is_reserved{
+    background-color: rgba(255, 7, 3, 0.648);
+    color: aliceblue;
+    
+}
+
+
