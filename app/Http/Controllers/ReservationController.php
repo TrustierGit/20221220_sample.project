@@ -118,8 +118,7 @@ class ReservationController extends Controller
         */ 
         DB::statement('CALL EDIT_RESERVATION(?,?,?,?,?,@msg)',$array);
         $result = DB::select('SELECT @msg AS result');
-        $status = $result[0]->result;
-
+        $status = $result[0]->result; 
         return redirect('/user/reservation_list')->with('status', $status);
 
     }

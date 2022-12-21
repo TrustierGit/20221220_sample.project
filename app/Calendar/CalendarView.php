@@ -142,9 +142,15 @@ class CalendarView {
 				$html[] = '<td class="'.$day->getClassName().' '. $class_add .'">';
 				
 				if($class_add !== 'pastday' && $this->flag_open === true){
-						$html[] = '<div class="date-button text-3xl font-bold"><button class="button-calender" type="button" @click="open = true" data-toggle="modal" data-target="#exampleModal" data-value="'. $day->getDay() .'"  id="calender_date'. $day->getDay() .'"> '. $day->render() .' </button></div>';
+						$html[] = '<div class="date-button text-3xl font-bold">
+						<button class="button-calender" type="button" @click="open = true" data-toggle="modal" data-target="#registerModal" data-value="'. $day->getDay() .'"  id="calender_date'. $day->getDay() .'"> '
+						. $day->render() .' </button></div>';
 				}else{
-					$html[] = '<div text-3xl font-bold>'. $day->render() .'</div>';
+					// $html[] = '<div text-3xl font-bold>'. $day->render() .'</div>';
+					$html[] = '<div class="date-button text-3xl font-bold">
+					<button type="button" @click="open = false" disabled 
+					data-value="'. $day->getDay() .'"  id="calender_date'. $day->getDay() .'"> '
+					. $day->render() .' </button></div>';
 				}
 
 				$html[] = '</td>';
