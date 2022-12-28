@@ -33,14 +33,20 @@ class FileExportController extends Controller
     private $today;
     private $message;
     private $thisMonth;
-
+/**
+ * バッチ処理に時間がかかる場合を想定
+ * OPEN_FROM（営業開始時間）から-7時間ずらし、23:59に翌日分のリストを取得
+ */
 public function __construct(){
 
     $this->user_eol = config('maintenance.user_eol');
     
-    $this->date=  Carbon::now()->format('Y-m-d');
-    $this->today= Carbon::now()->format('Ymd');
-    $this->thisMonth =Carbon::now()->format('Ym');
+    // $this->date=  Carbon::now()->format('Y-m-d');
+    $this->date=  Carbon::now()->addHours(17)->format('Y-m-d');
+    // $this->today= Carbon::now()->format('Ymd');
+    $this->today= Carbon::now()->addHours(17)->format('Ymd');
+    // $this->thisMonth =Carbon::now()->format('Ym');
+    $this->thisMonth =Carbon::now()->addHours(17)->format('Ym');
     
     // $this->file_path='./csv_export/';
     
@@ -116,7 +122,8 @@ public function __construct(){
             $folder_name=$this->thisMonth;
             $this->file_path='./csv_export/'.$folder_name.'/';
 
-            Storage::put($this->file_path . $this->today .'_' . $filename . '.csv', $data);
+            // Storage::put($this->file_path . $this->today .'_' . $filename . '.csv', $data);
+            Storage::disk('ftp')->put($this->file_path . $this->today .'_' . $filename . '.csv', $data);
         } catch(\Exception $e){
             throw new UserException('makeCSV error');
         }
