@@ -17,6 +17,7 @@ class CalendarView {
     private $char_digit;
     public $flag_open;
 	private $date_maintenance;
+	
 
 	function getLicenseCount(){
 				//上限数確認
@@ -103,7 +104,9 @@ class CalendarView {
 		$weeks = $this->getWeeks();
 		$weekCounter=0;
 		$user_email= Auth::user()->email;
-		$rev_array = DB::table('reservations')->where('email_staff' ,'=',$user_email)->get(['date_reservation'])->toArray();
+		$start_of_month = $this->carbon->startOfMonth()->format('Y-m-d');
+		$end_of_month = $this->carbon->endOfMonth()->format('Y-m-d');
+		$rev_array = DB::table('reservations')->where('email_staff' ,'=',$user_email)->get('date_reservation',[$start_of_month,$end_of_month])->toArray();
 		$reservation_array = [];
 
 		//上限数確認
@@ -154,6 +157,7 @@ class CalendarView {
 				}
 
 				$html[] = '</td>';
+				
 
 			}
 			$html[] = '</tr>';
@@ -167,8 +171,7 @@ class CalendarView {
 
 		$html[] = '</table>';
 		$html[] = '</div>';
-
-
+		
 		return implode("", $html);
 	}
 
@@ -182,8 +185,13 @@ class CalendarView {
 		$lastDay = $this->carbon->copy()->lastOfMonth();
 
 		//1週目
+		Carbon::setWeekStartsAt(Carbon::SUNDAY);
+		$startDay = $this->carbon->copy()->startOfWeek();
+
+		if ($firstDay !== $startDay){
 		$week = new CalendarWeek($firstDay->copy());
 		$weeks[] = $week;
+		}
 
 		//作業用の日
 		$tmpDay = $firstDay->copy()->addDay(7)->startOfWeek();
