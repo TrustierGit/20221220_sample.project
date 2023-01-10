@@ -39,7 +39,9 @@ class CalendarView {
 }
 
 	function getDate_Maintenance(){
+		if(isset(Auth::user()->organization)){
 		$this->date_maintenance = Auth::user()->organization->date_maintenance;
+	}
 	}
 
 	function __construct($date){
