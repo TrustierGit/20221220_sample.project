@@ -33,18 +33,19 @@ class FileExportController extends Controller
     private $today;
     private $message;
     private $thisMonth;
-
+/**
+ * バッチ処理に時間がかかる場合を想定
+ * OPEN_FROM（営業開始時間）から-7時間ずらし、23:59に翌日分のリストを取得
+ */
 public function __construct(){
 
     $this->user_eol = config('maintenance.user_eol');
     
-    $this->date=  Carbon::now()->format('Y-m-d');
-    $this->today= Carbon::now()->format('Ymd');
-    $this->thisMonth =Carbon::now()->format('Ym');
-    
-    // $this->file_path='./csv_export/';
-    
+    $this->date=  Carbon::now()->addHours(17)->format('Y-m-d');
+    $this->today= Carbon::now()->addHours(17)->format('Ymd');
+    $this->thisMonth =Carbon::now()->addHours(17)->format('Ym');
 
+    
 }
 
     public function FileExport() {
@@ -100,28 +101,54 @@ public function __construct(){
                      
             } catch (\Exception $e) {
                 $message = $e->getMessage();
+                return $message; 
             }
+
+            $message=  $this->sendCSV();
         return $message; 
 
-       
-     }
+
+        }
+
 
      private function makeCSV($filename,$dataArr){
-        // throw new UserException('makeCSV error');
         try{
             $data = count($dataArr);
             foreach($dataArr as $key =>$value){
                 $data .= $this->user_eol . $value['email_staff'];
             }
             $folder_name=$this->thisMonth;
-            $this->file_path='./csv_export/'.$folder_name.'/';
+            $folder_name_day = $this->today;
+            $this->file_path='./csv_export/'.$folder_name.'/'.$folder_name_day.'/';
 
-            Storage::put($this->file_path . $this->today .'_' . $filename . '.csv', $data);
+            $output_csv= $this->file_path . $this->today .'_' . $filename . '.csv';
+            // Storage::put($this->file_path . $this->today .'_' . $filename . '.csv', $data);
+            Storage::put($output_csv, $data);
+
+            // Storage::disk('ftp')->put($this->file_path . $this->today .'_' . $filename . '.csv', $this->file_path . $this->today .'_' . $filename . '.csv');
         } catch(\Exception $e){
             throw new UserException('makeCSV error');
         }
- 
      }
-     
+
+     private function sendCSV(){
+        $message='';
+        try{
+            $folder_name=$this->thisMonth;
+            $folder_name_day = $this->today;
+            $this->file_path='./csv_export/'.$folder_name.'/'.$folder_name_day.'/';
+            $files_arry = Storage::allFiles($this->file_path);
+            foreach($files_arry as $file){
+                Storage::disk('ftp')->put($file,$file);
+            }
+            $message = '完了';
+            return $message;
+        } catch(\Exception $e){
+            $message = $e->getMessage();
+            return $message;
+        }
+        return $message; 
+
+    }
     
 }
