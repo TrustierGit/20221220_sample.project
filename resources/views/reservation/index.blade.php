@@ -52,7 +52,7 @@
     {{-- 時間外表示 --}}
     @if($calendar->flag_open === false)
         <div class="pt-32 pl-32">
-            <div class="text-xl bg-white p-12 text-center font-bold">
+            <div class="text-xl bg-white p-4 text-center font-bold">
                 ただいま利用時間外のため、利用予約機能を停止しております。<br>
                 利用時間は{!! config('maintenance.open_from')!!}～{!! config('maintenance.open_to')!!}です。<br>
                 ご不便をおかけ致しますが、利用時間内にご利用くださいますようお願い申し上げます。
@@ -60,15 +60,18 @@
         </div>
     @endif
         
-    <div class="p-12 border-b border-gray-200 flex flex-auto">
+    <!-- 2023-01-10 変更 <div class="p-4 border-b border-gray-200 flex flex-auto"> -->
+    <div class="p-4 border-b border-gray-200 block">
    
-        <div class="px-12 py-24 text-2xl">
+        <!-- 2023-01-10 変更 <div class="px-12 py-24 text-2xl"> -->
+        <div class="px-12 py-24 text-2xl left" style="float:left;">
             <span class="title-font font-medium text-gray-900 text-3xl">{{ $calendar->getTitle() }}</span>
             <div class="mt-6">
                 {!! $calendar->render(0) !!}
             </div>
         </div>
-        <div class="px-12 py-24 text-2xl">
+        <!-- 2023-01-10 変更 <div class="px-12 py-24 text-2xl"> -->
+        <div class="px-12 py-24 text-2xl left" style="float:left;">
             <span class="title-font font-medium text-gray-900 text-3xl">{{ $calendar->getTitle(config('cal.next_month')) }}</span>
             <div class="mt-6">
                 {!! $next_calendar->render(config('cal.next_month')) !!}
@@ -118,11 +121,11 @@
         $('#registerModal').hide();
         $(window).on('load',function(){
             $('#close_btn').on('click', function () {
-            $('.modal-header').empty();
-            $('.hidden-form1').val('');
-            $('.hidden-form2').val('');
-            $('button#reserve,button#cancel').prop('disabled',true);
-            });
+                $('.modal-header').empty();
+                $('.hidden-form1').val('');
+                $('.hidden-form2').val('');
+                $('button#reserve,button#cancel').prop('disabled',true);
+                });
             $('.button-calender').on('click', function () {
                 let rsvdate = this.dataset.value;
                 $('.modal-header').empty();
@@ -132,7 +135,6 @@
                 if (!rsvdate) {
                     return false;
                 } 
-                // console.log(rsvdate);
                 $.ajax({
                     type: 'GET',
                     url: '/user/ajax/'  , 

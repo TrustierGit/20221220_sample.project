@@ -1,7 +1,9 @@
+@isset(Auth::user()->organization->name_organization)
 <x-app-layout>
   <div class="container px-5 py-4 mx-auto">
-    <h1 class="text-2xl font-medium title-font text-gray-900 pt-12">■ダッシュボード</h1>
+    <h1 class="text-2xl font-medium title-font text-gray-900 pt-12">■ダッシュボード</h1> 
     <div class="font-bold text-3xl text-center pb-4">― {{Auth::user()->organization->name_organization}} お知らせ　―</div>
+  
     <div class="p-6 overflow-y:scroll rounded">
   <section class="text-gray-600 body-font">
   <div class="container px-5 py-0 mx-auto">
@@ -52,5 +54,13 @@
 </section>     
                 </div>
             </div>
-           
+    
 </x-app-layout>
+@else
+<x-guest-layout>
+    <div class="flex flex-col text-center mb-12 text-gray-600 font-bold">
+      <div class="text-4xl p-24">組織マスターエラー</div>
+      <div class="text-2xl">お手数ですが管理者へお問い合わせください。</div>
+    </div>
+</x-guest-layout>
+@endisset       
