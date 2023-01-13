@@ -11,11 +11,13 @@ class CalendarWeek {
 	function __construct($date, $index = 0){
 		$this->carbon = new Carbon($date);
 		$this->index = $index;
+
 	}
 
 	function getClassName(){
 		return "week-" . $this->index;
 	}
+
 
 	/**
 	 * @return CalendarWeekDay[]

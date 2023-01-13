@@ -20,9 +20,10 @@ Route::get('/', function () {
     return redirect('/login',);
 });
 
+
 // Route::get('/test', function () {
 //     // adminのtoken仮作成
-//     $user = Auth::loginUsingId(2);
+//     $user = Auth::loginUsingId(1);
     
 //     $token = $user->createToken('test');
 
@@ -31,6 +32,7 @@ Route::get('/', function () {
 
 
 Route::get('/dashboard','App\Http\Controllers\NotificationController@index')->middleware(['auth'])->name('dashboard');
+
 
 Route::prefix('user')->middleware(['auth'])->middleware('can:user')->group(function(){
 

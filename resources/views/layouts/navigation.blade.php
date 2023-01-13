@@ -73,7 +73,11 @@
                         <!-- Authentication -->
                         <div class="bg-gray-100">
                         <div class="border-b px-4">
+                        @isset(Auth::user()->organization->name_organization)
                             <div class="text-lg px-4">{{ Auth::user()->organization->name_organization }}</div>
+                        @else
+                        <div class="text-lg px-4">{{ Auth::user()->domain_organization }}</div>
+                        @endisset
                             <div class="text-lg px-4">{{ Auth::user()->name }}</div>
         
                         </div>
@@ -149,7 +153,11 @@
         <!-- Responsive Settings Options -->
         <div class="pt-4 pb-1 border-t border-gray-200">
             <div class="border-b px-4">
+                        @isset(Auth::user()->organization->name_organization)
                             <div class="text-lg px-4">{{ Auth::user()->organization->name_organization }}</div>
+                        @else
+                        <div class="text-lg px-4">{{ Auth::user()->domain_organization }}</div>
+                        @endisset
                             <div class="text-lg px-4">{{ Auth::user()->name }}</div>
             </div>
 

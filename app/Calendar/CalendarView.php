@@ -17,6 +17,7 @@ class CalendarView {
     private $char_digit;
     public $flag_open;
 	private $date_maintenance;
+	
 
 	function getLicenseCount(){
 				//上限数確認
@@ -38,7 +39,9 @@ class CalendarView {
 }
 
 	function getDate_Maintenance(){
+		if(isset(Auth::user()->organization)){
 		$this->date_maintenance = Auth::user()->organization->date_maintenance;
+	}
 	}
 
 	function __construct($date){
@@ -103,7 +106,9 @@ class CalendarView {
 		$weeks = $this->getWeeks();
 		$weekCounter=0;
 		$user_email= Auth::user()->email;
-		$rev_array = DB::table('reservations')->where('email_staff' ,'=',$user_email)->get(['date_reservation'])->toArray();
+		$start_of_month = $this->carbon->startOfMonth()->format('Y-m-d');
+		$end_of_month = $this->carbon->endOfMonth()->format('Y-m-d');
+		$rev_array = DB::table('reservations')->where('email_staff' ,'=',$user_email)->get('date_reservation',[$start_of_month,$end_of_month])->toArray();
 		$reservation_array = [];
 
 		//上限数確認
@@ -140,14 +145,38 @@ class CalendarView {
 				
 
 				$html[] = '<td class="'.$day->getClassName().' '. $class_add .'">';
-				
-				if($class_add !== 'pastday' && $this->flag_open === true){
-						$html[] = '<div class="date-button text-3xl font-bold"><button class="button-calender" type="button" @click="open = true" data-toggle="modal" data-target="#exampleModal" data-value="'. $day->getDay() .'"  id="calender_date'. $day->getDay() .'"> '. $day->render() .' </button></div>';
+
+				if($this->flag_open === true){
+					if($class_add !== 'pastday'){
+						$html[] = '<div class="date-button text-3xl font-bold">
+						<button class="button-calender" type="button" @click="open = true" data-toggle="modal" data-target="#registerModal" data-value="'. $day->getDay() .'"  id="calender_date'. $day->getDay() .'"> '
+						. $day->render() .' </button></div>';
+					}else{
+						// $html[] = '<div text-3xl font-bold>'. $day->render() .'</div>';
+						$html[] = '<div class="date-button text-3xl font-bold">
+						<button type="button" @click="open = false" disabled 
+						data-value="'. $day->getDay() .'"  id="calender_date'. $day->getDay() .'"> '
+						. $day->render() .' </button></div>';
+					}
 				}else{
-					$html[] = '<div text-3xl font-bold>'. $day->render() .'</div>';
+					$html[] = $day->render();
 				}
+				
+				// if($class_add !== 'pastday' && $this->flag_open === true){
+				// 		$html[] = '<div class="date-button text-3xl font-bold">
+				// 		<button class="button-calender" type="button" @click="open = true" data-toggle="modal" data-target="#registerModal" data-value="'. $day->getDay() .'"  id="calender_date'. $day->getDay() .'"> '
+				// 		. $day->render() .' </button></div>';
+				// }else{
+				// 	// $html[] = '<div text-3xl font-bold>'. $day->render() .'</div>';
+				// 	// $html[] = '<div class="date-button text-3xl font-bold">
+				// 	// <button type="button" @click="open = false" disabled 
+				// 	// data-value="'. $day->getDay() .'"  id="calender_date'. $day->getDay() .'"> '
+				// 	// . $day->render() .' </button></div>';
+				// 	$html[] = $day->render();
+				// }
 
 				$html[] = '</td>';
+				
 
 			}
 			$html[] = '</tr>';
@@ -161,8 +190,7 @@ class CalendarView {
 
 		$html[] = '</table>';
 		$html[] = '</div>';
-
-
+		
 		return implode("", $html);
 	}
 
@@ -176,8 +204,13 @@ class CalendarView {
 		$lastDay = $this->carbon->copy()->lastOfMonth();
 
 		//1週目
+		Carbon::setWeekStartsAt(Carbon::SUNDAY);
+		$startDay = $this->carbon->copy()->startOfWeek();
+
+		if ($firstDay !== $startDay){
 		$week = new CalendarWeek($firstDay->copy());
 		$weeks[] = $week;
+		}
 
 		//作業用の日
 		$tmpDay = $firstDay->copy()->addDay(7)->startOfWeek();

@@ -48,8 +48,15 @@ class User extends Authenticatable
     ];
 
     public function organization(){
-        // return $this->belongsTo(Organization::class,'domain_organization','domain_organization');
-        return $this->belongsTo(Organization::class,['domain_organization','mode_reserve'],['domain_organization','mode_reserve']);
+
+        try{
+            return $this->belongsTo(Organization::class,['domain_organization','mode_reserve'],['domain_organization','mode_reserve']);
+        }catch(\Exception $e){
+            // return $e->getMessage();
+            $this->name_organization='わからん';
+            dd($e);
+        }
+        // return $this->belongsTo(Organization::class,['domain_organization','mode_reserve'],['domain_organization','mode_reserve']);
         // return $this->belongsTo(Organization::class,'mode_reserve','mode_reserve');
 
         }

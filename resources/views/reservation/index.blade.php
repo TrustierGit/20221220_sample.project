@@ -38,68 +38,66 @@
         </div>
         </div>
     
-                    {{-- フラッシュメッセージの表示 --}}
-                    @if($errors->any())
-                        @foreach($errors->all() as $error)
-                    <div class="panel-body pt-12 pl-32">
-                    <div class="text-2xl font-medium border-2 bg-white p-6 mt-24 text-center text-red-700">{{ $error }}</div>
-                    
-                        @endforeach
-                    @endif
-                    @if (session('status'))
-                    <div class="panel-body pt-12 pl-32">
-                        <div class="alert alert-info">
-                            <div class="text-2xl font-medium border-2 p-6 mt-24 bg-white text-blue-900 text-center">{{ session('status') }}</div>
-                        </div>
-                    
-                    @endif
-    
-    
-            {{-- 時間外表示 --}}
-                    @if($calendar->flag_open === false)
-                    <div class="pt-32 pl-32">
-                    <div class="text-xl bg-white p-12 text-center font-bold">
-                        ただいま利用時間外のため、利用予約機能を停止しております。<br>
-                        利用時間は{!! config('maintenance.open_from')!!}～{!! config('maintenance.open_to')!!}です。<br>
-                        ご不便をおかけ致しますが、利用時間内にご利用くださいますようお願い申し上げます。
-                        </div>
-                        </div>
-                    @endif
+    {{-- フラッシュメッセージの表示 --}}
+    <script src="{{ asset('js/jquery.min2.js')}}"></script>
+    <script src="{{ asset('js/toastr.min.js')}}"></script>
+    <script src="{{ asset('js/toastr.js')}}"></script>
+        <script>
+            @if (session('status'))
+                $(function () {
+                        toastr.success('{{ session('status') }}');
+                });
+            @endif
+        </script>
+    {{-- 時間外表示 --}}
+    @if($calendar->flag_open === false)
+        <div class="pt-32 pl-32">
+            <div class="text-xl bg-white p-4 text-center font-bold">
+                ただいま利用時間外のため、利用予約機能を停止しております。<br>
+                利用時間は{!! config('maintenance.open_from')!!}～{!! config('maintenance.open_to')!!}です。<br>
+                ご不便をおかけ致しますが、利用時間内にご利用くださいますようお願い申し上げます。
+            </div>
+        </div>
+    @endif
         
-    <div class="p-12 border-b border-gray-200 flex flex-auto">
+    <!-- 2023-01-10 変更 <div class="p-4 border-b border-gray-200 flex flex-auto"> -->
+    <!-- <div class="p-4 border-b border-gray-200 block"> -->
    
-        <div class="px-12 py-24 text-2xl">
+        <!-- 2023-01-10 変更 <div class="px-12 py-24 text-2xl"> -->
+        <div class="px-12 py-24 text-2xl left" style="float:left;">
             <span class="title-font font-medium text-gray-900 text-3xl">{{ $calendar->getTitle() }}</span>
             <div class="mt-6">
                 {!! $calendar->render(0) !!}
             </div>
         </div>
-        <div class="px-12 py-24 text-2xl">
+        <!-- 2023-01-10 変更 <div class="px-12 py-24 text-2xl"> -->
+        <div class="px-12 py-24 text-2xl left" style="float:left;">
             <span class="title-font font-medium text-gray-900 text-3xl">{{ $calendar->getTitle(config('cal.next_month')) }}</span>
             <div class="mt-6">
                 {!! $next_calendar->render(config('cal.next_month')) !!}
             </div>
         </div>
-            <!--modal-->
-            <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" >
+
+          <!--modal-->
+            <div class="modal fade" id="registerModal" tabindex="-1" role="dialog" aria-labelledby="registerModalLabel" aria-hidden="true" >
                  <div class="absolute top-0 left-0 w-full h-full flex items-center justify-center" style="background-color: rgba(0,0,0,.5);" x-show="open">
-                        <div class="text-left bg-gray-100 h-auto p-8 md:max-w-xl md:p-12 lg:p-12 shadow-xl rounded-lg mx-2 md:mx-0" @click.away="open = false">
+                        <div class="text-center bg-gray-100 h-auto p-8 md:max-w-xl md:p-12 lg:p-12 shadow-xl rounded-lg mx-2 md:mx-0" @click.away="open = false">
                                 <div class="modal-dialog">
-                                    <button id="close_btn" type="button" class="close text-3xl" data-dismiss="modal" aria-label="Close">×</button>
+                                    <button id="close_btn" type="button" class="round_btn" data-dismiss="modal" aria-label="Close"></button>
                                         <div class="modal-content">
-                                            <div class="modal-header mt-8 text-xl"></div>
+                                            <div class="modal-header mt-12 text-3xl font-bold"></div>
                                                 <div class="modal-body">
                                                     <form method="POST" action=/user/reservation_list>
                                                                 <div>
                                                                     @csrf
                                                                 </div>
-                                                                <div class="modal-title"><div>
+                                                                <div class="modal-title mt-8"><div>
                                                                     <input class="hidden-form1" name="rsvdate" id="rsvdate" value="" type="hidden">
                                                                     <input class="hidden-form2" name="email" id="email" value="" type="hidden">
                                                                 </div>
                                                                 
-                                                            <button id="reserve" name="make_reservation" class="text-white bg-indigo-500 border-0 py-2 px-8 focus:outline-none hover:bg-indigo-600 rounded-lg text-lg" action=/user/reservation_list  disabled=true>予約登録</button>
-                                                            <button id="cancel" name="cancel" class="text-white bg-yellow-500 border-0 py-2 px-8 focus:outline-none hover:bg-yellow-600 rounded-lg text-lg" action=/user/reservation_list disabled=true>予約取消</button>
+                                                            <button id="reserve" name="make_reservation" class="text-white bg-indigo-500 border-0 py-4 px-8 my-8 focus:outline-none hover:bg-indigo-600 rounded-lg text-2xl" action=/user/reservation_list  disabled=true>予約登録</button>
+                                                            <button id="cancel" name="cancel" class="text-white bg-yellow-500 border-0 py-4 px-8 my-8 focus:outline-none hover:bg-yellow-600 rounded-lg text-2xl" action=/user/reservation_list disabled=true>予約取消</button>
                                                             
                                                     </form>
                                                 </div>
@@ -110,81 +108,72 @@
                         </div>
                     </div>
                 </div>
-                
-
 <!--Ajax-->
+        <script src="{{ asset('js/vue.global.prod.js')}}"></script>
+        <script src="{{ asset('js/jquery-3.5.1.slim.min.js')}}"></script>
+        <script src="{{ asset('js/axios.min.js')}}"></script>
+        <script src="{{ asset('js/luxon.min.js')}}"></script>
+        <script src="{{ asset('js/popper.min.js')}}"></script>
+        <script src="{{ asset('js/bootstrap.min.js')}}"></script>
+        <script src="{{ asset('js/jquery.min.js')}}"></script>
 
-<script src="{{ asset('js/vue.global.prod.js')}}"></script>
-<script src="{{ asset('js/jquery-3.5.1.slim.min.js')}}"></script>
-<script src="{{ asset('js/axios.min.js')}}"></script>
-<script src="{{ asset('js/luxon.min.js')}}"></script>
-<script src="{{ asset('js/popper.min.js')}}"></script>
-<script src="{{ asset('js/bootstrap.min.js')}}"></script>
-<script src="{{ asset('js/jquery.min.js')}}"></script>
-
-<script>
-$('#exampleModal').hide();
-$(window).on('load',function(){
-    $('#close_btn').on('click', function () {
-    $('.modal-header').empty();
-    $('.hidden-form1').val('');
-    $('.hidden-form2').val('');
-    $('button#reserve,button#cancel').prop('disabled',true);
-    });
-    $('.button-calender').on('click', function () {
-        let rsvdate = this.dataset.value;
-        $('.modal-header').empty();
-        $('.hidden-form1').val('');
-        $('.hidden-form2').val('');
-
-        if (!rsvdate) {
-            return false;
-        } 
-        // console.log(rsvdate);
-        $.ajax({
-            type: 'GET',
-            url: '/user/ajax/'  , 
-            data: {
-            'days': rsvdate, 
-        },
-            dataType: 'json', 
-            beforeSend: function () {
-                $('.loading').removeClass('display-none');
-            }
-        }).done(function (data,status,xhr) { //ajaxが成功したときの処理
-            $.each(data, function (index, value) { 
-                //デバック
-                let is_reserved = value.is_reserved;
-                // console.log('email:['+value.email+']');
-                // console.log('days:['+value.days+']');
-                // console.log('is_resv:['+value.is_reserved+']');
-                // console.log('counts:['+value.counts+']');
-                $(function(){
-                $('.modal-header').append(value.days);
-                    if(value.is_reserved === 1){
-                    $('.modal-header').append('<br>予約済み</br>');
-                    $('button#cancel').prop('disabled',false);
-                    } else {
-                        if(value.counts < {{$calendar->getLicenseCount()}}){
-                            $('.modal-header').append('<div class="text-green-600 text-xl">予約可能</div>');
-                            $('button#reserve').prop('disabled',false).addClass('availavle_cls');
-                        } else {
-                            $('.modal-header').append('<div class="text-red-600 text-xl">予約不可</div>');
-                        }
-                    }
-                    $('.hidden-form1').val(value.days);
-                    $('.hidden-form2').val(value.email);
+        <script>
+        $('#registerModal').hide();
+        $(window).on('load',function(){
+            $('#close_btn').on('click', function () {
+                $('.modal-header').empty();
+                $('.hidden-form1').val('');
+                $('.hidden-form2').val('');
+                $('button#reserve,button#cancel').prop('disabled',true);
                 });
-            })
-        }).fail(function (data,status,xhr) {
-            //ajax通信がエラーのときの処理
-            console.log(data);
-            console.log(status);
-            console.log(xhr);
+            $('.button-calender').on('click', function () {
+                let rsvdate = this.dataset.value;
+                $('.modal-header').empty();
+                $('.hidden-form1').val('');
+                $('.hidden-form2').val('');
+
+                if (!rsvdate) {
+                    return false;
+                } 
+                $.ajax({
+                    type: 'GET',
+                    url: '/user/ajax/'  , 
+                    data: {
+                    'days': rsvdate, 
+                },
+                    dataType: 'json', 
+                    beforeSend: function () {
+                        $('.loading').removeClass('display-none');
+                    }
+                }).done(function (data,status,xhr) { 
+                    $.each(data, function (index, value) { 
+                        let is_reserved = value.is_reserved;
+                        $(function(){
+                        $('.modal-header').append(value.days);
+                            if(value.is_reserved === 1){
+                            // $('.modal-header').append('<br>予約済み</br>');
+                            $('.modal-header').append('<div class="text-red-600 text-2xl font-bold">予約済み</div>');
+                            $('button#cancel').prop('disabled',false);
+                            } else {
+                                if(value.counts < {{$calendar->getLicenseCount()}}){
+                                    $('.modal-header').append('<div class="text-green-600 text-2xl font-bold">予約可能</div>');
+                                    $('button#reserve').prop('disabled',false).addClass('availavle_cls');
+                                } else {
+                                    $('.modal-header').append('<div class="text-red-600 text-2xl font-bold">予約不可</div>');
+                                }
+                            }
+                            $('.hidden-form1').val(value.days);
+                            $('.hidden-form2').val(value.email);
+                        });
+                    })
+                }).fail(function (data,status,xhr) {
+                    console.log(data);
+                    console.log(status);
+                    console.log(xhr);
+                });
+            });
         });
-    });
-});
-</script>
+        </script>
                 </div>
             </div>
         </div>
