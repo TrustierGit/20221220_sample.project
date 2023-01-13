@@ -25,22 +25,18 @@ class OrganizationSeeder extends Seeder
             'domain_organization'=>'marumaru.co.jp',
             'name_organization'=>'まるまる市',
             'stored_server'=>'server1',
-            // 'count_license'=>200,
-            'date_maintenance'=>'2022-12-31',
-            //'name_file'=>'test.csv',
-            // 'flag_licence'=>'0',
-            // 'flag_delete'=>'0',
+            'count_license'=>10,
+            'date_maintenance'=>'2029-12-31',
+           
             
         ],
         [
                 'domain_organization'=>'test1.co.jp',
                 'name_organization'=>'test1市',
                 'stored_server'=>'server1',
-                // 'count_license'=>200,
-                'date_maintenance'=>'2022-12-31',
-                //'name_file'=>'test1.csv',
-                // 'flag_licence'=>'0',
-                // 'flag_delete'=>'0',
+                'count_license'=>10,
+                'date_maintenance'=>'2029-12-31',
+                
                 
             ],
         
@@ -48,12 +44,9 @@ class OrganizationSeeder extends Seeder
                     'domain_organization'=>'test2.co.jp',
                     'name_organization'=>'test2市',
                     'stored_server'=>'server3',
-                    // 'count_license'=>200,
-                    'date_maintenance'=>'2022-12-31',
-                    //'name_file'=>'test2.csv',
-                    // 'flag_licence'=>'0',
-                    // 'flag_delete'=>'0',
-                    
+                    'count_license'=>10,
+                    'date_maintenance'=>'2029-12-31',
+                  
                 ],
        
 

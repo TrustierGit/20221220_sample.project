@@ -85,7 +85,7 @@ class CalendarView {
 	function render($addmonth){
 		$html = [];
 
-		$html[] = '<div class="calendar">';
+		// $html[] = '<div class="calendar">';
 		$html[] = '<table class="table text-center whitespace-no-wrap  border-solid border-collapse">';
 		$html[] = '<thead>';
 		$html[] = '<tr>';
@@ -146,19 +146,21 @@ class CalendarView {
 
 				$html[] = '<td class="'.$day->getClassName().' '. $class_add .'">';
 
+				// 各日付の設定
 				if($this->flag_open === true){
 					if($class_add !== 'pastday'){
-						$html[] = '<div class="date-button text-3xl font-bold">
-						<button class="button-calender" type="button" @click="open = true" data-toggle="modal" data-target="#registerModal" data-value="'. $day->getDay() .'"  id="calender_date'. $day->getDay() .'"> '
+						$html[] = '<div class="date-button text-3xl font-bold"><button class="button-calender" type="button" @click="open = true" data-toggle="modal" data-target="#registerModal" data-value="'
+						. $day->getDay() .'"  id="calender_date'. $day->getDay() .'"> '
 						. $day->render() .' </button></div>';
 					}else{
 						// $html[] = '<div text-3xl font-bold>'. $day->render() .'</div>';
-						$html[] = '<div class="date-button text-3xl font-bold">
-						<button type="button" @click="open = false" disabled 
-						data-value="'. $day->getDay() .'"  id="calender_date'. $day->getDay() .'"> '
+						// 過去日の場合
+						$html[] = '<div class="date-button text-3xl font-bold"><button type="button" @click="open = false" disabled data-value="'
+						. $day->getDay() .'"  id="calender_date'. $day->getDay() .'"> '
 						. $day->render() .' </button></div>';
 					}
 				}else{
+					// 時間外の場合（参照のみ）
 					$html[] = $day->render();
 				}
 				
@@ -189,7 +191,7 @@ class CalendarView {
 		$html[] = '</tbody>';
 
 		$html[] = '</table>';
-		$html[] = '</div>';
+		// $html[] = '</div>';
 		
 		return implode("", $html);
 	}

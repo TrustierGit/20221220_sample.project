@@ -64,17 +64,19 @@
     <!-- <div class="p-4 border-b border-gray-200 block"> -->
    
         <!-- 2023-01-10 変更 <div class="px-12 py-24 text-2xl"> -->
-        <div class="px-12 py-24 text-2xl left" style="float:left;">
-            <span class="title-font font-medium text-gray-900 text-3xl">{{ $calendar->getTitle() }}</span>
-            <div class="mt-6">
-                {!! $calendar->render(0) !!}
+        <!-- <div class="px-12 py-24 text-2xl left" style="float:left;"> -->
+        <div class="px-12 py-24 text-2xl flex flex-auto">
+            <div class="block ml-6 mr-6">
+                <div class="title-font font-medium text-gray-900 mb-3 text-3xl table">{{ $calendar->getTitle() }}</div>
+                <div class="calendar">{!! $calendar->render(0) !!}</div>
             </div>
-        </div>
+        <!-- </div> -->
         <!-- 2023-01-10 変更 <div class="px-12 py-24 text-2xl"> -->
-        <div class="px-12 py-24 text-2xl left" style="float:left;">
-            <span class="title-font font-medium text-gray-900 text-3xl">{{ $calendar->getTitle(config('cal.next_month')) }}</span>
-            <div class="mt-6">
-                {!! $next_calendar->render(config('cal.next_month')) !!}
+        <!-- <div class="px-12 py-24 text-2xl left" style="float:left;"> -->
+        <!-- <div class="px-12 py-24 text-2xl flex flex-auto"> -->
+            <div class="block ml-6 mr-6">
+                <div class="title-font font-medium text-gray-900 mb-3 text-3xl table">{{ $calendar->getTitle(config('cal.next_month')) }}</div>
+                <div class="calendar">{!! $next_calendar->render(config('cal.next_month')) !!}</div>
             </div>
         </div>
 
@@ -151,7 +153,6 @@
                         $(function(){
                         $('.modal-header').append(value.days);
                             if(value.is_reserved === 1){
-                            // $('.modal-header').append('<br>予約済み</br>');
                             $('.modal-header').append('<div class="text-red-600 text-2xl font-bold">予約済み</div>');
                             $('button#cancel').prop('disabled',false);
                             } else {
