@@ -27,7 +27,7 @@ class OrganizationSeeder extends Seeder
             'stored_server'=>'server1',
             // 'count_license'=>200,
             'date_maintenance'=>'2022-12-31',
-            'name_file'=>'test.csv',
+            //'name_file'=>'test.csv',
             // 'flag_licence'=>'0',
             // 'flag_delete'=>'0',
             
@@ -38,7 +38,7 @@ class OrganizationSeeder extends Seeder
                 'stored_server'=>'server1',
                 // 'count_license'=>200,
                 'date_maintenance'=>'2022-12-31',
-                'name_file'=>'test1.csv',
+                //'name_file'=>'test1.csv',
                 // 'flag_licence'=>'0',
                 // 'flag_delete'=>'0',
                 
@@ -50,7 +50,7 @@ class OrganizationSeeder extends Seeder
                     'stored_server'=>'server3',
                     // 'count_license'=>200,
                     'date_maintenance'=>'2022-12-31',
-                    'name_file'=>'test2.csv',
+                    //'name_file'=>'test2.csv',
                     // 'flag_licence'=>'0',
                     // 'flag_delete'=>'0',
                     

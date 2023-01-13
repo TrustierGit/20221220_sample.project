@@ -121,7 +121,7 @@ public function __construct(){
             $folder_name_day = $this->today;
             $this->file_path='./csv_export/'.$folder_name.'/'.$folder_name_day.'/';
 
-            $output_csv= $this->file_path . $this->today .'_' . $filename . '.csv';
+            $output_csv= $this->file_path . $filename  . '_' . $this->today .'.csv';
             // Storage::put($this->file_path . $this->today .'_' . $filename . '.csv', $data);
             Storage::put($output_csv, $data);
 

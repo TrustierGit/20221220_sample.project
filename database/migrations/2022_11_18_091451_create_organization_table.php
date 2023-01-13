@@ -21,7 +21,7 @@ return new class extends Migration
             $table->string('stored_server',100)->comment('SplashTop対象サーバー名');
             $table->integer('count_license')->comment('所持ライセンス')->default(0);
             $table->date('date_maintenance')->comment('メンテナンス');
-            $table->string('name_file',100)->comment('csvファイル名');
+            // $table->string('name_file',100)->comment('csvファイル名');
             $table->integer('flag_license')->comment('契約形態（0:一般/1:個別）')->default(0);
             $table->integer('flag_delete')->comment('削除フラグ（0:アクティブ/1:削除）')->default(0);
             $table->timestamps();
