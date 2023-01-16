@@ -2,7 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ReservationController;
-// use App\Http\Controllers\FileExportController;
+use App\Http\Controllers\AuthenticatedSessionController;
 use Carbon\Carbon;
 
 
@@ -19,16 +19,6 @@ use Carbon\Carbon;
 Route::get('/', function () {
     return redirect('/login',);
 });
-
-
-// Route::get('/test', function () {
-//     // adminのtoken仮作成
-//     $user = Auth::loginUsingId(1);
-    
-//     $token = $user->createToken('test');
-
-//     dd($token);
-// });
 
 
 Route::get('/dashboard','App\Http\Controllers\NotificationController@index')->middleware(['auth'])->name('dashboard');
@@ -61,10 +51,10 @@ Route::prefix('admin')->middleware(['auth'])->middleware('can:admin-higher')->gr
 
     Route::get('/change_pass', 'App\Http\Controllers\Auth\ChangePasswordController@edit')->name('password.change');
     Route::patch('/change_pass','App\Http\Controllers\Auth\ChangePasswordController@update');
+   
     
 });
-//api.phpへ
-// Route::get('/test',[FileExportController::class,'FileExport']);
+
 
 
 require __DIR__.'/auth.php';
