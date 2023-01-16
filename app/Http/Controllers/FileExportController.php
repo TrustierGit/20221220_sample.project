@@ -25,7 +25,6 @@ class FileExportController extends Controller
      * @return  
      */
 
-    public $domainlist;
     public $outputlist;
     private $user_eol;
     private $file_path;
@@ -60,13 +59,6 @@ public function __construct(){
 
         foreach ($serverlist as $key => $value) {
 
-
-            $this->domainlist[$value->stored_server] = Organization::select('domain_organization')
-                ->where('flag_delete','=',0)
-                ->where('stored_server','=',$value->stored_server)
-                ->get()->toArray();
-
- 
             $this->outputlist[$value->stored_server] = Reservation::select('email_staff')
  
                 ->whereIn(
@@ -93,9 +85,9 @@ public function __construct(){
                 // $exists=false;
                 if ($exists){
                    
-                    $message = $count.'files exported';
+                    $message = $count.'files exported'.$this->user_eol;
                 }else{
-                    $message = 'Made a new directory ,'.$count.' files exported';
+                    $message = 'Made a new directory ,'.$count.' files exported' .$this->user_eol;
     
                 }
                      
@@ -104,7 +96,7 @@ public function __construct(){
                 return $message; 
             }
 
-            $message=  $this->sendCSV();
+            $message=  $this->sendCSV() .$this->user_eol;
         return $message; 
 
 
@@ -122,10 +114,8 @@ public function __construct(){
             $this->file_path='./csv_export/'.$folder_name.'/'.$folder_name_day.'/';
 
             $output_csv= $this->file_path . $filename  . '_' . $this->today .'.csv';
-            // Storage::put($this->file_path . $this->today .'_' . $filename . '.csv', $data);
             Storage::put($output_csv, $data);
 
-            // Storage::disk('ftp')->put($this->file_path . $this->today .'_' . $filename . '.csv', $this->file_path . $this->today .'_' . $filename . '.csv');
         } catch(\Exception $e){
             throw new UserException('makeCSV error');
         }
@@ -139,9 +129,9 @@ public function __construct(){
             $this->file_path='./csv_export/'.$folder_name.'/'.$folder_name_day.'/';
             $files_arry = Storage::allFiles($this->file_path);
             foreach($files_arry as $file){
-                Storage::disk('ftp')->put($file,$file);
+                Storage::disk('ftp')->put(basename($file),Storage::get($file));
             }
-            $message = '完了';
+            $message =count($files_arry) . 'ファイル転送　完了'.$this->user_eol;
             return $message;
         } catch(\Exception $e){
             $message = $e->getMessage();
