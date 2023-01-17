@@ -85,9 +85,9 @@ public function __construct(){
                 // $exists=false;
                 if ($exists){
                    
-                    $message = $count.'files exported'.$this->user_eol;
+                    $message = $count.'files exported';
                 }else{
-                    $message = 'Made a new directory ,'.$count.' files exported' .$this->user_eol;
+                    $message = 'Made a new directory ,'.$count.' files exported';
     
                 }
                      
@@ -124,14 +124,16 @@ public function __construct(){
      private function sendCSV(){
         $message='';
         try{
+            $send_result='';
             $folder_name=$this->thisMonth;
             $folder_name_day = $this->today;
             $this->file_path='./csv_export/'.$folder_name.'/'.$folder_name_day.'/';
             $files_arry = Storage::allFiles($this->file_path);
             foreach($files_arry as $file){
                 Storage::disk('ftp')->put(basename($file),Storage::get($file));
+                $send_result .= date('Y-m-d H:i:s') . ' [' .  basename($file) . '] Send.' . $this->user_eol;
             }
-            $message =count($files_arry) . 'ファイル転送　完了'.$this->user_eol;
+            $message = $send_result .date('Y-m-d H:i:s') . ' ['  . count($files_arry) . '] files successfuly transferred ';
             return $message;
         } catch(\Exception $e){
             $message = $e->getMessage();
