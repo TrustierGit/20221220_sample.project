@@ -43,13 +43,13 @@ public function __construct(){
     $this->date=  Carbon::now()->addHours(17)->format('Y-m-d');
     $this->today= Carbon::now()->addHours(17)->format('Ymd');
     $this->thisMonth =Carbon::now()->addHours(17)->format('Ym');
+    $this->file_path='./csv_export/'.$this->thisMonth.'/'.$this->today.'/';
 
-    
 }
-
     public function FileExport() {
-
-        
+        //Export前にフォルダを削除
+        Storage::deleteDirectory($this->file_path);
+        //サーバリスト取得（ファイル数）
         $serverlist = DB::table('organizations')
             ->where('flag_delete','=',0)
             ->select('stored_server')
@@ -58,9 +58,7 @@ public function __construct(){
             ->get()->toArray();
 
         foreach ($serverlist as $key => $value) {
-
-            $this->outputlist[$value->stored_server] = Reservation::select('email_staff')
- 
+            $this->outputlist[$value->stored_server] = Reservation::select('email_staff') 
                 ->whereIn(
                     'domain_organization',
                     Organization::select('domain_organization')
@@ -71,22 +69,21 @@ public function __construct(){
                 ->orderBy('domain_organization','asc')
                 ->orderBy('email_staff','asc')
                 ->get()->toArray();
-
         }
         $message=''; 
-
             try{  
+                //csv_exportフォルダの有無確認
                 $exists= Storage::disk('local')->exists('csv_export');
                 $count = 0;
                 foreach ($this->outputlist as $key => $value) {
                     $this->makeCSV($key,$value); 
                     $count ++;
                 }
-                // $exists=false;
                 if ($exists){
-                   
+                    //csv_exportフォルダがある場合
                     $message = $count.'files exported';
                 }else{
+                    //csv_exportフォルダが無い場合
                     $message = 'Made a new directory ,'.$count.' files exported';
     
                 }
@@ -102,35 +99,36 @@ public function __construct(){
 
         }
 
-
+        /**
+         * 該当フォルダに転送用ファイルを作成する
+         */
      private function makeCSV($filename,$dataArr){
         try{
             $data = count($dataArr);
             foreach($dataArr as $key =>$value){
                 $data .= $this->user_eol . $value['email_staff'];
             }
-            $folder_name=$this->thisMonth;
-            $folder_name_day = $this->today;
-            $this->file_path='./csv_export/'.$folder_name.'/'.$folder_name_day.'/';
-
-            $output_csv= $this->file_path . $filename  . '_' . $this->today .'.csv';
-            Storage::put($output_csv, $data);
+        //作成したファイルをlocalに保存
+            Storage::put($this->file_path . $filename  . '_' . $this->today .'.csv', $data);
 
         } catch(\Exception $e){
             throw new UserException('makeCSV error');
         }
      }
 
+    /**
+     * 該当ディレクトリ内にあるファイルを全てFTP転送する
+     */
      private function sendCSV(){
         $message='';
+        $send_result='';
         try{
-            $send_result='';
-            $folder_name=$this->thisMonth;
-            $folder_name_day = $this->today;
-            $this->file_path='./csv_export/'.$folder_name.'/'.$folder_name_day.'/';
+            //フォルダ内の全てのファイルを取得
             $files_arry = Storage::allFiles($this->file_path);
+            //１件ずつFTP転送
             foreach($files_arry as $file){
                 Storage::disk('ftp')->put(basename($file),Storage::get($file));
+            //転送結果を表示
                 $send_result .= date('Y-m-d H:i:s') . ' [' .  basename($file) . '] Send.' . $this->user_eol;
             }
             $message = $send_result .date('Y-m-d H:i:s') . ' ['  . count($files_arry) . '] files successfuly transferred ';
