@@ -20,6 +20,14 @@ Route::get('/', function () {
     return redirect('/login',);
 });
 
+// Route::get('/test', function () {
+//     // adminのtoken仮作成
+//     $user = Auth::loginUsingId(1);
+    
+//     $token = $user->createToken('test');
+
+//     dd($token);
+// });
 
 Route::get('/dashboard','App\Http\Controllers\NotificationController@index')->middleware(['auth'])->name('dashboard');
 
