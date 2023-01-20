@@ -1,18 +1,6 @@
 <x-app-layout>
-  <!-- <div class="container px-5 py-28 mx-auto"> -->
-  <div class="container px-5 py-4 mx-auto">
-
-  <h1 class="text-2xl font-medium title-font text-gray-900 py-12 mb-24">■予約履歴ダウンロード</h1>
-    <!-- <h1 class="text-3xl font-medium title-font text-gray-900 mb-12 text-center">■予約履歴ダウンロード</h1> -->
-    <!-- 追加 -->
-    <div class="panel-body">
-                    {{-- フラッシュメッセージの表示 --}}
-                    @if (session('status'))
-                        <div class="alert alert-info">
-                            <div class="text-2xl font-medium text-blue-900 mb-8 text-center">{{ session('status') }}
-                        </div>
-                    @endif
-      </div>
+<div class="container px-5 py-4 mx-auto">
+  <h1 class="text-2xl font-medium title-font text-gray-900 py-12 ">■予約履歴ダウンロード</h1>
         <div class="h-full w-3/4 m-auto p-8 rounded bg-white border-2 border-gray-400">
             <span class="flex-grow flex flex-col pl-4">
               <span class="title-font font-medium text-gray-900">
@@ -55,8 +43,19 @@
       </div>
     </div>
   </div>
-  
-</section>
     </div>
-</x-app-layout>
+
+    {{-- フラッシュメッセージの表示 --}}
+    <script src="{{ asset('js/jquery.min2.js')}}"></script>
+    <script src="{{ asset('js/toastr.min.js')}}"></script>
+    <script src="{{ asset('js/toastr.js')}}"></script>
+        <script>
+            @if (session('status'))
+                $(function () {
+                        toastr.warning('{{ session('status') }}');
+                        $(".toast").attr("style","top:100px");
+                });
+            @endif
+        </script>
+  </x-app-layout>
 
