@@ -38,17 +38,7 @@
         </div>
         </div>
     
-    {{-- フラッシュメッセージの表示 --}}
-    <script src="{{ asset('js/jquery.min2.js')}}"></script>
-    <script src="{{ asset('js/toastr.min.js')}}"></script>
-    <script src="{{ asset('js/toastr.js')}}"></script>
-        <script>
-            @if (session('status'))
-                $(function () {
-                        toastr.success('{{ session('status') }}');
-                });
-            @endif
-        </script>
+    
     {{-- 時間外表示 --}}
     @if($calendar->flag_open === false)
         <div class="pt-32 pl-32">
@@ -60,20 +50,12 @@
         </div>
     @endif
         
-    <!-- 2023-01-10 変更 <div class="p-4 border-b border-gray-200 flex flex-auto"> -->
-    <!-- <div class="p-4 border-b border-gray-200 block"> -->
-   
-        <!-- 2023-01-10 変更 <div class="px-12 py-24 text-2xl"> -->
-        <!-- <div class="px-12 py-24 text-2xl left" style="float:left;"> -->
         <div class="px-12 py-24 text-2xl flex flex-auto">
             <div class="block ml-6 mr-6">
                 <div class="title-font font-medium text-gray-900 mb-3 text-3xl table">{{ $calendar->getTitle() }}</div>
                 <div class="calendar">{!! $calendar->render(0) !!}</div>
             </div>
-        <!-- </div> -->
-        <!-- 2023-01-10 変更 <div class="px-12 py-24 text-2xl"> -->
-        <!-- <div class="px-12 py-24 text-2xl left" style="float:left;"> -->
-        <!-- <div class="px-12 py-24 text-2xl flex flex-auto"> -->
+   
             <div class="block ml-6 mr-6">
                 <div class="title-font font-medium text-gray-900 mb-3 text-3xl table">{{ $calendar->getTitle(config('cal.next_month')) }}</div>
                 <div class="calendar">{!! $next_calendar->render(config('cal.next_month')) !!}</div>
@@ -110,70 +92,81 @@
                         </div>
                     </div>
                 </div>
+{{-- フラッシュメッセージの表示 --}}
+                <script src="{{ asset('js/jquery.min2.js')}}"></script>
+                <script src="{{ asset('js/toastr.min.js')}}"></script>
+                <script src="{{ asset('js/toastr.js')}}"></script>
+                    
 <!--Ajax-->
-        <script src="{{ asset('js/vue.global.prod.js')}}"></script>
-        <script src="{{ asset('js/jquery-3.5.1.slim.min.js')}}"></script>
-        <script src="{{ asset('js/axios.min.js')}}"></script>
-        <script src="{{ asset('js/luxon.min.js')}}"></script>
-        <script src="{{ asset('js/popper.min.js')}}"></script>
-        <script src="{{ asset('js/bootstrap.min.js')}}"></script>
-        <script src="{{ asset('js/jquery.min.js')}}"></script>
+                <script src="{{ asset('js/vue.global.prod.js')}}"></script>
+                <script src="{{ asset('js/jquery-3.5.1.slim.min.js')}}"></script>
+                <script src="{{ asset('js/axios.min.js')}}"></script>
+                <script src="{{ asset('js/luxon.min.js')}}"></script>
+                <script src="{{ asset('js/popper.min.js')}}"></script>
+                <script src="{{ asset('js/bootstrap.min.js')}}"></script>
+                <script src="{{ asset('js/jquery.min.js')}}"></script>
 
-        <script>
-        $('#registerModal').hide();
-        $(window).on('load',function(){
-            $('#close_btn').on('click', function () {
-                $('.modal-header').empty();
-                $('.hidden-form1').val('');
-                $('.hidden-form2').val('');
-                $('button#reserve,button#cancel').prop('disabled',true);
-                });
-            $('.button-calender').on('click', function () {
-                let rsvdate = this.dataset.value;
-                $('.modal-header').empty();
-                $('.hidden-form1').val('');
-                $('.hidden-form2').val('');
-
-                if (!rsvdate) {
-                    return false;
-                } 
-                $.ajax({
-                    type: 'GET',
-                    url: '/user/ajax/'  , 
-                    data: {
-                    'days': rsvdate, 
-                },
-                    dataType: 'json', 
-                    beforeSend: function () {
-                        $('.loading').removeClass('display-none');
-                    }
-                }).done(function (data,status,xhr) { 
-                    $.each(data, function (index, value) { 
-                        let is_reserved = value.is_reserved;
-                        $(function(){
-                        $('.modal-header').append(value.days);
-                            if(value.is_reserved === 1){
-                            $('.modal-header').append('<div class="text-red-600 text-2xl font-bold">予約済み</div>');
-                            $('button#cancel').prop('disabled',false);
-                            } else {
-                                if(value.counts < {{$calendar->getLicenseCount()}}){
-                                    $('.modal-header').append('<div class="text-green-600 text-2xl font-bold">予約可能</div>');
-                                    $('button#reserve').prop('disabled',false).addClass('availavle_cls');
-                                } else {
-                                    $('.modal-header').append('<div class="text-red-600 text-2xl font-bold">予約不可</div>');
-                                }
-                            }
-                            $('.hidden-form1').val(value.days);
-                            $('.hidden-form2').val(value.email);
+                <script>
+                @if (session('status'))
+                    $(function () {
+                            toastr.success('{{ session('status') }}');
+                            $(".toast").attr("style","top:100px");
+                    });
+                @endif
+                $('#registerModal').hide();
+                $(window).on('load',function(){
+                    $('#close_btn').on('click', function () {
+                        $('.modal-header').empty();
+                        $('.hidden-form1').val('');
+                        $('.hidden-form2').val('');
+                        $('button#reserve,button#cancel').prop('disabled',true);
                         });
-                    })
-                }).fail(function (data,status,xhr) {
-                    console.log(data);
-                    console.log(status);
-                    console.log(xhr);
+                    $('.button-calender').on('click', function () {
+                        let rsvdate = this.dataset.value;
+                        $('.modal-header').empty();
+                        $('.hidden-form1').val('');
+                        $('.hidden-form2').val('');
+
+                        if (!rsvdate) {
+                            return false;
+                        } 
+                        $.ajax({
+                            type: 'GET',
+                            url: '/user/ajax/'  , 
+                            data: {
+                            'days': rsvdate, 
+                        },
+                            dataType: 'json', 
+                            beforeSend: function () {
+                                $('.loading').removeClass('display-none');
+                            }
+                        }).done(function (data,status,xhr) { 
+                            $.each(data, function (index, value) { 
+                                let is_reserved = value.is_reserved;
+                                $(function(){
+                                $('.modal-header').append(value.days);
+                                    if(value.is_reserved === 1){
+                                    $('.modal-header').append('<div class="text-red-600 text-2xl font-bold">予約済み</div>');
+                                    $('button#cancel').prop('disabled',false);
+                                    } else {
+                                        if(value.counts < {{$calendar->getLicenseCount()}}){
+                                            $('.modal-header').append('<div class="text-green-600 text-2xl font-bold">予約可能</div>');
+                                            $('button#reserve').prop('disabled',false).addClass('availavle_cls');
+                                        } else {
+                                            $('.modal-header').append('<div class="text-red-600 text-2xl font-bold">予約不可</div>');
+                                        }
+                                    }
+                                    $('.hidden-form1').val(value.days);
+                                    $('.hidden-form2').val(value.email);
+                                });
+                            })
+                        }).fail(function (data,status,xhr) {
+                            console.log(data);
+                            console.log(status);
+                            console.log(xhr);
+                        });
+                    });
                 });
-            });
-        });
         </script>
                 </div>
             </div>

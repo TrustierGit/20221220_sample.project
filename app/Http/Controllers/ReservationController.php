@@ -71,7 +71,7 @@ class ReservationController extends Controller
        if($exists > 0){
 	        return Excel::download($exports, 'reservation_list.csv'); 
         }else{
-            return redirect('/admin/download')->with('status','該当データなし(0件)　該当データはありません。');
+            return redirect('/admin/download')->with('status','該当データはありません');
         }
     
     }
