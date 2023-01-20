@@ -44,6 +44,7 @@ class ReservationsExport implements FromCollection,WithHeadings
 		return [
 				'id',  
                 '自治体ドメイン名',
+                'アカウントフラグ（0:通常/1:常時）',
 				'予約日', 
                 '職員メールアドレス',
 				'備考欄', 
