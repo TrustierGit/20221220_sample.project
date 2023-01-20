@@ -9,11 +9,12 @@ use Maatwebsite\Excel\Concerns\WithHeadings;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
+use Maatwebsite\Excel\Concerns\WithStrictNullComparison;
 
 /**
  * csvエクスポートクラス
  */
-class ReservationsExport implements FromCollection,WithHeadings
+class ReservationsExport implements FromCollection,WithHeadings, WithStrictNullComparison
 {
     protected $request_con;
 
@@ -60,4 +61,6 @@ class ReservationsExport implements FromCollection,WithHeadings
         $cell->setValueExplicit($value, DataType::TYPE_STRING);
         return true;
     }
+
+    
 }
