@@ -11,6 +11,7 @@ use App\Models\Notification;
 use Illuminate\Pagination\Paginator;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
+use Illuminate\Validation\ValidationException;
 
 
 class AuthenticatedSessionController extends Controller
@@ -61,8 +62,18 @@ class AuthenticatedSessionController extends Controller
         $request->authenticate();
 
         $request->session()->regenerate();
-
-        return redirect()->intended(RouteServiceProvider::HOME);
+        if(Auth::user()->organization->flag_delete === 0){
+            if ($request)
+            return redirect()->intended(RouteServiceProvider::HOME);
+        }
+        else{
+            $request->session()->invalidate();
+            $request->session()->regenerateToken();
+            throw ValidationException::withMessages([
+                'email' => trans('auth.whoops'),
+            ]);
+            return redirect('login');
+        };
     }
 
     /**
@@ -82,4 +93,5 @@ class AuthenticatedSessionController extends Controller
         // return redirect('/');
         return redirect('login');
     }
+
 }
