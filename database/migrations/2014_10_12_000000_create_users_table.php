@@ -27,6 +27,9 @@ return new class extends Migration
             $table->timestamps();
 
         });
+
+        // ユニーク設定
+        $table->unique(['email']);
     }
 
     /**

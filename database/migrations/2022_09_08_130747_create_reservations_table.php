@@ -23,6 +23,9 @@ return new class extends Migration
             $table->date('created_at')->comment('データ登録日');
             $table->timestamp('updated_at')->comment('データ更新日');
         });
+
+        // ユニーク設定
+        $table->unique(['domain_organization','mode_reserve','date_reservation','email_staff']);
     }
 
     /**
