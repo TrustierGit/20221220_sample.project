@@ -59,7 +59,7 @@ Route::prefix('admin')->middleware(['auth'])->middleware('can:admin-higher')->gr
 
     Route::get('/change_pass', 'App\Http\Controllers\Auth\ChangePasswordController@edit')->name('password.change');
     Route::patch('/change_pass','App\Http\Controllers\Auth\ChangePasswordController@update');
-   
+    
     
 });
 

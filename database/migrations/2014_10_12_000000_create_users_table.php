@@ -28,8 +28,7 @@ return new class extends Migration
 
         });
 
-        // ユニーク設定
-        $table->unique(['email']);
+
     }
 
     /**

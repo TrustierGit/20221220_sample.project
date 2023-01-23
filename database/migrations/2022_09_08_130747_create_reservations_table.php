@@ -22,10 +22,10 @@ return new class extends Migration
             $table->text('text_remarks')->comment('備考欄')->nullable();
             $table->date('created_at')->comment('データ登録日');
             $table->timestamp('updated_at')->comment('データ更新日');
-        });
 
-        // ユニーク設定
-        $table->unique(['domain_organization','mode_reserve','date_reservation','email_staff']);
+            // ユニーク設定
+        $table->unique(['domain_organization','mode_reserve','date_reservation','email_staff'],'reservations_table_unique_keys');
+        });
     }
 
     /**
