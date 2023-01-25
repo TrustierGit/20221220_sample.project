@@ -39,7 +39,7 @@ class FileExportController extends Controller
 public function __construct(){
 
     $this->user_eol = config('maintenance.user_eol');
-    
+    //出力日を決める
     $this->date=  Carbon::now()->addHours(17)->format('Y-m-d');
     $this->today= Carbon::now()->addHours(17)->format('Ymd');
     $this->thisMonth =Carbon::now()->addHours(17)->format('Ym');
@@ -49,6 +49,7 @@ public function __construct(){
     public function FileExport() {
         //Export前にフォルダを削除
         Storage::deleteDirectory($this->file_path);
+
         //サーバリスト取得（ファイル数）
         $serverlist = DB::table('organizations')
             ->where('flag_delete','=',0)
@@ -71,6 +72,7 @@ public function __construct(){
                 ->get()->toArray();
         }
         $message=''; 
+           
             try{  
                 //csv_exportフォルダの有無確認
                 $exists= Storage::disk('local')->exists('csv_export');
@@ -85,20 +87,16 @@ public function __construct(){
                 }else{
                     //csv_exportフォルダが無い場合
                     $message = 'Made a new directory ,'.$count.' files exported';
-    
-                }
-                     
+                }      
             } catch (\Exception $e) {
                 $message = $e->getMessage();
                 return $message; 
             }
-
             $message=  $this->sendCSV() .$this->user_eol;
         return $message; 
-
-
         }
 
+       
         /**
          * 該当フォルダに転送用ファイルを作成する
          */

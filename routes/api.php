@@ -3,6 +3,7 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\FileExportController;
+use App\Http\Controllers\AutoReservationController;
 
 /*
 |--------------------------------------------------------------------------
@@ -20,3 +21,4 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 });
 
 Route::middleware('auth:sanctum')->get('/MakeFileAPI',[FileExportController::class,'FileExport']);
+Route::middleware('auth:sanctum')->get('/AutoReservationAPI',[AutoReservationController::class,'AutoReservation']);
