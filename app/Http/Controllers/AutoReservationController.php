@@ -24,12 +24,14 @@ class AutoReservationController extends Controller
          */
         public function AutoReservation(){
             $message=''; 
+            $datetime = new Carbon();
             $array=[
                 '2023-01-28',
             ];
             DB::statement('CALL AUTO_RESERVATION(?,@msg)',$array);
             $result1 = DB::select('SELECT @msg AS result');
+            $date = $datetime->format('Y-m-d H:i:s');
             $message = $result1[0]->result; 
-            return $message;
+            return $date .' ' . $message .  config('maintenance.user_eol');
             }
 }
