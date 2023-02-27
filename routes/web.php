@@ -20,14 +20,6 @@ Route::get('/', function () {
     return redirect('/login',);
 });
 
-// Route::get('/test', function () {
-//     // adminのtoken仮作成
-//     $user = Auth::loginUsingId(1);
-    
-//     $token = $user->createToken('test');
-
-//     dd($token);
-// });
 
 Route::get('/dashboard','App\Http\Controllers\NotificationController@index')->middleware(['auth'])->name('dashboard');
 
@@ -62,6 +54,20 @@ Route::prefix('admin')->middleware(['auth'])->middleware('can:admin-higher')->gr
     
     
 });
+
+Route::prefix('superuser')->middleware(['auth'])->middleware('can:superuser')->group(function(){
+    Route::get('/reset_api', 'App\Http\Controllers\MakeApiKeyController@ResetKey')->name('ResetKey');
+//管理者権限の設定方法を確認
+// Route::get('/test', function () {
+//     // adminのtoken仮作成
+//     $user = Auth::loginUsingId(1);
+    
+//     $token = $user->createToken('test');
+
+//     dd($token);
+// });
+});
+
 
 
 
