@@ -33,6 +33,10 @@ Route::prefix('user')->middleware(['auth'])->middleware('can:user')->group(funct
     Route::get('/ajax/',[ReservationController::class,'ajax']);
 });
 
+Route::prefix('admin')->middleware(['auth'])->middleware('can:admin')->group(function(){
+    Route::get('/download', 'App\Http\Controllers\ReservationController@index')->name('reservation.download');
+    
+});
 
 Route::prefix('admin')->middleware(['auth'])->middleware('can:admin-higher')->group(function(){
     Route::get('/news', 'App\Http\Controllers\NotificationController@show')->name('notification.create');
@@ -56,7 +60,9 @@ Route::prefix('admin')->middleware(['auth'])->middleware('can:admin-higher')->gr
 });
 
 Route::prefix('superuser')->middleware(['auth'])->middleware('can:superuser')->group(function(){
-    Route::get('/reset_api', 'App\Http\Controllers\MakeApiKeyController@ResetKey')->name('ResetKey');
+    Route::get('/ResetKey', 'App\Http\Controllers\MakeApiKeyController@ShowAPIKey')->name('ResetKey');
+    Route::get('/reservation_lists', 'App\Http\Controllers\ReservationController@lists_for_super')->name('super.reservation_lists');
+    
 //管理者権限の設定方法を確認
 // Route::get('/test', function () {
 //     // adminのtoken仮作成

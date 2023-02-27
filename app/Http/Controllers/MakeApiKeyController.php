@@ -6,16 +6,18 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 
 use Illuminate\Http\Request;
+use Laravel\Sanctum\HasApiTokens;
 
 class MakeApiKeyController extends Controller
 {
-    public function ResetKey(){
-        // $userid = Auth::User()->id;
-        // $user = Auth::loginUsingId($userid);
-        // $token = $user->createToken('test');
-        // dd($token);
-        //  dd($userid);
-
-        return view('super.resetapi');
+    /**
+     * APIリセット画面表示
+     */
+    public function ShowAPIKey(){
+        return view('super.ResetKey');
     }
+
+   
+
+
 }

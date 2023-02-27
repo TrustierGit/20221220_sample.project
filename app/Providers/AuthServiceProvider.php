@@ -32,7 +32,9 @@ class AuthServiceProvider extends ServiceProvider
         Gate::define('user', function($user){
             return $user->mode_admin === 0;
         });
-        
+        Gate::define('admin',function($user){
+            return $user->mode_admin === 1 ;
+        });
         Gate::define('admin-higher',function($user){
             return $user->mode_admin >0 && $user->role <9 ;
         });

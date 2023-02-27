@@ -16,9 +16,16 @@
                     </x-nav-link>
                 </div>
                 @endcan
-                @can('admin-higher')
+                @can('admin')
                 <div class="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex">
                     <x-nav-link :href="route('reservation.download')" :active="request()->routeIs('reservation.download')">
+                        {{ __('予約履歴') }}
+                    </x-nav-link>
+                </div>
+                @endcan
+                @can('superuser')
+                <div class="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex">
+                    <x-nav-link :href="route('super.reservation_lists')" :active="request()->routeIs('super.reservation_lists')">
                         {{ __('予約履歴') }}
                     </x-nav-link>
                 </div>
@@ -48,6 +55,13 @@
                 <div class="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex">
                     <x-nav-link :href="route('password.change')" :active="request()->routeIs('password.change')">
                         {{ __('パスワード変更') }}
+                    </x-nav-link>
+                </div>
+                @endcan
+                @can('superuser')
+                <div class="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex">
+                    <x-nav-link :href="route('ResetKey')" :active="request()->routeIs('ResetKey')">
+                        {{ __('APIキーリセット') }}
                     </x-nav-link>
                 </div>
                 @endcan

@@ -27,6 +27,14 @@ class ReservationController extends Controller
         return view ('download');
     }
 
+    /**
+     * super管理者用ダウンロード画面
+    */
+    public function lists_for_super(Request $request)
+    {
+        return view ('super.reservation_lists');
+    }
+
 
     /**
      * Display the specified resource.

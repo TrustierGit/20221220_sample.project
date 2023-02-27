@@ -36,6 +36,8 @@ class ReservationsExport implements FromCollection,WithHeadings, WithStrictNullC
         ->Where('date_reservation','>=',$start)
         ->Where('date_reservation','<=',$end)
         ->get();
+        //★タイムゾーンを秒までにする
+        //データ登録日いらない
 
     }
     
