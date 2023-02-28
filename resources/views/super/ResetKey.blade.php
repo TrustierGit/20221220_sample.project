@@ -5,7 +5,10 @@
     
       <section class="text-gray-600 body-font">
           <div class="hidden sm:flex sm:items-center sm:ml-6 py-8 flex flex-col">
-            <button class="mt-8 mb-8 text-white bg-yellow-500 border-0 py-2 px-8 focus:outline-none hover:bg-yellow-600 rounded text-lg rounded text-lg font-bold" action=/superuser/reset_api>APIキーリセット</button>
+              <form method="POST" action=/superuser/ResetKey>
+                @csrf
+                <button class="mt-8 mb-8 text-white bg-yellow-500 border-0 py-2 px-8 focus:outline-none hover:bg-yellow-600 rounded text-lg rounded text-lg font-bold" action=/superuser/reset_api>APIキーリセット</button>
+              </form>
           </div>
       </section>     
               
@@ -17,7 +20,7 @@
         <script>
             @if (session('status'))
                 $(function () {
-                        toastr.warning('{{ session('status') }}');
+                        toastr.success('{{ session('status') }}');
                         $(".toast").attr("style","top:100px");
                 });
             @endif

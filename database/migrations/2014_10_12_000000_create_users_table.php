@@ -23,6 +23,7 @@ return new class extends Migration
             $table->tinyInteger('mode_admin')->comment('管理者モード(0:一般/1:自治体/9:NESIC)');
             $table->integer('flag_delete')->comment('削除フラグ（0:アクティブ/1:削除）')->default(0);
             $table->timestamp('email_verified_at')->nullable();
+            // $table->string('rememberToken',100)->comment('APIキー');
             $table->rememberToken();
             $table->timestamps();
 
