@@ -22,7 +22,7 @@ class MakeApiKeyController extends Controller
     public function ResetKey(Request $request){
         $login_user = Auth::user();
         $user_id = $login_user->id;
-        $user = Auth::loginUsingId($user_id);
+ //       $user = Auth::loginUsingId($user_id);
        
 
         $token_base = $login_user->createToken('API'.'_UserID_'.$user_id,['super_user'])->plainTextToken;
