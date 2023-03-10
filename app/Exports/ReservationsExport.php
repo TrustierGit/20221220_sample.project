@@ -33,11 +33,17 @@ class ReservationsExport implements FromCollection,WithHeadings, WithStrictNullC
         $user_organaization = Auth::user()->domain_organization;
 
         return Reservation::where('domain_organization',$user_organaization)
-        ->Where('date_reservation','>=',$start)
-        ->Where('date_reservation','<=',$end)
-        ->get();
+	->Where('date_reservation','>=',$start)
+	->Where('date_reservation','<=',$end)
+	->select(['id','domain_organization','mode_reserve','date_reservation','email_staff','text_remarks','updated_at'])
+	->get();
+
         //★タイムゾーンを秒までにする
-        //データ登録日いらない
+
+
+$employeeData = $employee
+                ->select(['id', 'name', 'department'])
+                ->get();
 
     }
     
@@ -50,8 +56,7 @@ class ReservationsExport implements FromCollection,WithHeadings, WithStrictNullC
                 'アカウントフラグ（0:通常/1:常時）',
 				'予約日', 
                 '職員メールアドレス',
-				'備考欄', 
-				'データ登録日', 
+				'備考欄',  
 				'データ更新日'
 			]; 
 
