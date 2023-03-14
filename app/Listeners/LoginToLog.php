@@ -34,7 +34,8 @@ class LoginToLog
 	    'email' => $event->user->email,
             'ip_address' => request()->ip(),
             'user_agent' => request()->userAgent(),
-            'login_time' => \Carbon\Carbon::now()
+	    'login_time' => \Carbon\Carbon::now()
+	    //'operation_type' =>null;
 	]
 	    );
     }
