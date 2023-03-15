@@ -10,6 +10,6 @@ class AuthHistory extends Model
 	use HasFactory;
 
 	protected $fillable = [
-        'user_id','email','ip_address','user_agent','login_time'
+        'user_id','email','ip_address','info','user_agent','login_time'
     ];
 }

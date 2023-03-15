@@ -17,10 +17,11 @@ return new class extends Migration
 		$table->id();
 		$table->string('user_id')->nullable();
 	    $table->string('email')->nullable();
-            $table->string('ip_address')->nullable();
-            $table->text('user_agent')->nullable();
+        $table->string('ip_address')->nullable();
+        $table->string('info')->comment('アクション');
+        $table->text('user_agent')->nullable();
 	    $table->timestamp('login_time')->nullable();
-            $table->timestamps();     
+        $table->timestamps();     
 	});
     }
 

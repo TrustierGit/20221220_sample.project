@@ -32,9 +32,11 @@ class LoginToLog
         [
 	    'user_id' => $event->user->id,
 	    'email' => $event->user->email,
-            'ip_address' => request()->ip(),
-            'user_agent' => request()->userAgent(),
+        'ip_address' => request()->ip(),
+        'info' => 'login',
+        'user_agent' => request()->userAgent(),
 	    'login_time' => \Carbon\Carbon::now()
+
 	    //'operation_type' =>null;
 	]
 	    );

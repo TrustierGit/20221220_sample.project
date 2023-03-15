@@ -124,9 +124,26 @@ class ReservationController extends Controller
             注意：@msgはストアドプロシージャ内でのOUTPUT（戻り値）を格納する変数
                   戻り値を取得するために再度DB::selectで取得
         */ 
+        //★log開始
+        $log[]='CALL EDIT_RESERVATION';
+        $log[]=$array;
+
+        $log[]=[
+            'StoredName'=>'CALL EDIT_RESERVATION'
+            ,'info'=>'start'
+            ,'Param'=>$array
+        ];
+        //★開始
         DB::statement('CALL EDIT_RESERVATION(?,?,?,?,?,@msg)',$array);
         $result = DB::select('SELECT @msg AS result');
         $status = $result[0]->result; 
+        //★終了
+
+        $log[]=[
+            'StoredName'=>'CALL EDIT_RESERVATION'
+            ,'info'=>'end'
+            ,'Param'=>$array
+        ];
         return redirect('/user/reservation_list')->with('status', $status);
 
     }
