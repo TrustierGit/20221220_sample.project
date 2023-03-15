@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Reservation;
+use App\Models\AuthHistory;
 use Illuminate\Http\Request;
 use App\Calendar\CalendarView;
 use Illuminate\Support\Facades\DB;
@@ -133,7 +134,18 @@ class ReservationController extends Controller
             ,'info'=>'start'
             ,'Param'=>$array
         ];
-        //★開始
+            AuthHistory::create(
+                [
+                'user_id' => Auth::user()->id,
+                'email' => AUth::user()->email,
+                // 'ip_address' => request()->ip(),
+                'info' => '予約イベント',
+                // 'user_agent' => request()->userAgent(),
+                // 'login_time' => $login_time
+                //★login時間をもってきたい
+                ]
+            );
+
         DB::statement('CALL EDIT_RESERVATION(?,?,?,?,?,@msg)',$array);
         $result = DB::select('SELECT @msg AS result');
         $status = $result[0]->result; 
