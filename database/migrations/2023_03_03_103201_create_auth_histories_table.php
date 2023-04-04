@@ -13,7 +13,7 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('auth_histories', function (Blueprint $table) {
+        Schema::create('log', function (Blueprint $table) {
 		$table->id();
 		$table->string('user_id')->nullable();
 	    $table->string('email')->nullable();
@@ -32,6 +32,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('auth_histories');
+        Schema::dropIfExists('log');
     }
 };
