@@ -156,10 +156,25 @@ class ReservationController extends Controller
                 ]
             );
         //プロシージャ呼び出し
-        DB::statement('CALL EDIT_RESERVATION(?,?,?,?,?,@msg)',$array);
-        $result = DB::select('SELECT @msg AS result');
-        $status = $result[0]->result; 
-        
+        try{  
+            DB::statement('CALL EDIT_RESERVATION(?,?,?,?,?,@msg)',$array);
+            $result = DB::select('SELECT @msg AS result');
+            $status = $result[0]->result; 
+        }catch (\Exception $e) {
+            //プロシージャ呼び出しで失敗時ログ
+            $message = $e->getMessage();
+            $substr_message = substr($message,0,4000);
+            Log::create(
+               [
+               'user_id' => $user_id,
+               'email' => AUth::user()->email,
+               'ip_address' => request()->ip(),
+               'info' => $substr_message,
+               'user_agent' => request()->userAgent(),
+               'login_time' => $login_time
+               ] 
+               );
+        }
         //終了ログ
         $log_end[]=[
             'StoredName'=>'CALL EDIT_RESERVATION'
