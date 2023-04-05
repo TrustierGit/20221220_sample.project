@@ -126,7 +126,7 @@ class ReservationController extends Controller
             注意：@msgはストアドプロシージャ内でのOUTPUT（戻り値）を格納する変数
                   戻り値を取得するために再度DB::selectで取得
         */ 
-        
+
         //log開始
         $log_info[]='CALL EDIT_RESERVATION';
         $log_info[]=$array;
@@ -173,7 +173,7 @@ class ReservationController extends Controller
             'user_id' => $user_id,
             'email' => AUth::user()->email,
             'ip_address' => request()->ip(),
-            'info' => $end_info,
+            'info' => $status,
             'user_agent' => request()->userAgent(),
             'login_time' => $login_time
             ]
