@@ -6,7 +6,8 @@ use Illuminate\Auth\Events\Logout;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Support\Facades\DB;
-use App\Models\AuthHistory;
+use App\Models\Log;
+use Illuminate\Support\Facades\Auth;
 
 class LogoutToLog
     {
@@ -28,23 +29,23 @@ class LogoutToLog
          */
         public function handle(Logout $event)
         {
-            // $session_id = DB::table('auth_histories')
-            //                 ->where('email' ,'=',$event->user->email)
-            //                 ->max('id');
-            // $login_time =  Auth_history::find($session_id)->login_time;
+            $user_id = Auth::user()->id;
 
-            AuthHistory::create(
+            $login_time_id = DB::table('logs')
+            ->where('user_id' ,'=',$user_id)
+            ->max('id');
+
+            $login_time = Log::find($login_time_id)->login_time;
+            
+            Log::create(
             [
-            'user_id' => $event->user->id,
+            'user_id' => $user_id,
             'email' => $event->user->email,
             'ip_address' => request()->ip(),
             'info' => 'logout',
             'user_agent' => request()->userAgent(),
-            // 'login_time' => $login_time
-            //★login時間をもってきたい
-                            
-    
-            //'operation_type' =>null;
+            'login_time' => $login_time
+
         ]
             );
         }

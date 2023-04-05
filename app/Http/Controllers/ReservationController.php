@@ -13,6 +13,7 @@ use App\Exports\ReservationsExport;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Collection;
+use App\Models\Log;
 
 
 
@@ -125,37 +126,59 @@ class ReservationController extends Controller
             注意：@msgはストアドプロシージャ内でのOUTPUT（戻り値）を格納する変数
                   戻り値を取得するために再度DB::selectで取得
         */ 
-        //★log開始
-        $log[]='CALL EDIT_RESERVATION';
-        $log[]=$array;
+        
+        //log開始
+        $log_info[]='CALL EDIT_RESERVATION';
+        $log_info[]=$array;
 
-        $log[]=[
+        $log_info[]=[
             'StoredName'=>'CALL EDIT_RESERVATION'
             ,'info'=>'start'
             ,'Param'=>$array
         ];
-            AuthHistory::create(
+
+        $start_info = json_encode($log_info);
+        $user_id = Auth::user()->id;
+        $login_time_id = DB::table('logs')
+                        ->where('user_id' ,'=',$user_id)
+                        ->max('id');
+
+        $login_time = Log::find($login_time_id)->login_time;
+
+            Log::create(
                 [
-                'user_id' => Auth::user()->id,
+                'user_id' => $user_id,
                 'email' => AUth::user()->email,
-                // 'ip_address' => request()->ip(),
-                'info' => '予約イベント',
-                // 'user_agent' => request()->userAgent(),
-                // 'login_time' => $login_time
-                //★login時間をもってきたい
+                'ip_address' => request()->ip(),
+                'info' => $start_info,
+                'user_agent' => request()->userAgent(),
+                'login_time' => $login_time
                 ]
             );
-
+        //プロシージャ呼び出し
         DB::statement('CALL EDIT_RESERVATION(?,?,?,?,?,@msg)',$array);
         $result = DB::select('SELECT @msg AS result');
         $status = $result[0]->result; 
-        //★終了
-
-        $log[]=[
+        
+        //終了ログ
+        $log_end[]=[
             'StoredName'=>'CALL EDIT_RESERVATION'
             ,'info'=>'end'
             ,'Param'=>$array
         ];
+        $end_info = json_encode($log_end);
+
+        Log::create(
+            [
+            'user_id' => $user_id,
+            'email' => AUth::user()->email,
+            'ip_address' => request()->ip(),
+            'info' => $end_info,
+            'user_agent' => request()->userAgent(),
+            'login_time' => $login_time
+            ]
+        );
+
         return redirect('/user/reservation_list')->with('status', $status);
 
     }

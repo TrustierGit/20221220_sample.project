@@ -6,7 +6,7 @@ use Illuminate\Auth\Events\Login;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Support\Facades\DB;
-use App\Models\AuthHistory;
+use App\Models\Log;
 
 class LoginToLog
 {
@@ -28,7 +28,7 @@ class LoginToLog
      */
     public function handle(Login $event)
     {
-	    AuthHistory::create(
+	    Log::create(
         [
 	    'user_id' => $event->user->id,
 	    'email' => $event->user->email,
@@ -37,7 +37,6 @@ class LoginToLog
         'user_agent' => request()->userAgent(),
 	    'login_time' => \Carbon\Carbon::now()
 
-	    //'operation_type' =>null;
 	]
 	    );
     }

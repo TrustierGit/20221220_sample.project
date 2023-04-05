@@ -7,7 +7,6 @@ use Illuminate\Auth\Events\Lockout;
 use Illuminate\Auth\Events\Login;
 use Illuminate\Auth\Events\Logout;
 use Illuminate\Auth\Listeners\SendEmailVerificationNotification;
-use App\Listeners\LockoutToLog;
 use App\Listeners\LoginToLog;
 use App\Listeners\LogoutToLog;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
@@ -24,9 +23,6 @@ class EventServiceProvider extends ServiceProvider
         Registered::class => [
             SendEmailVerificationNotification::class,
 	],
-	    Lockout::class => [
-            LockoutToLog::class,
-        ],
         Login::class => [
             LoginToLog::class,
         ],
