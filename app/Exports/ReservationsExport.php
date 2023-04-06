@@ -10,11 +10,13 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use Maatwebsite\Excel\Concerns\WithStrictNullComparison;
+use Maatwebsite\Excel\Concerns\WithMapping;
+use Carbon\Carbon;
 
 /**
  * csvエクスポートクラス
  */
-class ReservationsExport implements FromCollection,WithHeadings, WithStrictNullComparison
+class ReservationsExport implements FromCollection,WithHeadings, WithStrictNullComparison,WithMapping
 {
     protected $request_con;
 
@@ -33,19 +35,31 @@ class ReservationsExport implements FromCollection,WithHeadings, WithStrictNullC
         $user_organaization = Auth::user()->domain_organization;
 
         return Reservation::where('domain_organization',$user_organaization)
-	->Where('date_reservation','>=',$start)
-	->Where('date_reservation','<=',$end)
-	->select(['id','domain_organization','mode_reserve','date_reservation','email_staff','text_remarks','updated_at'])
-	->get();
+	        ->Where('date_reservation','>=',$start)
+	        ->Where('date_reservation','<=',$end)
+	        ->select(['id','domain_organization','mode_reserve','date_reservation','email_staff','text_remarks','updated_at'])
+            ->get();
 
-        //★タイムゾーンを秒までにする
-
-
+    
 $employeeData = $employee
                 ->select(['id', 'name', 'department'])
                 ->get();
 
     }
+
+    public function map($row) :array
+        {
+            return [
+                $row->id,
+                $row->domain_organization,
+                $row->mode_reserve,
+                $row->date_reservation,
+                $row->email_staff,
+                $row->text_remarks,
+                //timestampからdatetimeに変換
+                Carbon::parse($row->updated_at)->__toString(),
+            ];
+        }
     
 
     public function headings():array
@@ -57,17 +71,12 @@ $employeeData = $employee
 				'予約日', 
                 '職員メールアドレス',
 				'備考欄',  
-				'データ更新日'
+                'データ更新日'
+                 
 			]; 
 
-	}
-
-    public function bindValue(Cell $cell, $value)
-    {
-        // 全てを文字列型で返す
-        $cell->setValueExplicit($value, DataType::TYPE_STRING);
-        return true;
     }
 
+    
     
 }
