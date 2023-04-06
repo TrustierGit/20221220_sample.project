@@ -11,7 +11,7 @@ use Illuminate\Support\Facades\Hash;
 class AddUsersCsv extends Seeder
 {
     /**
-     * Run the database seeds.
+     * 
      *
      * @return void
      */

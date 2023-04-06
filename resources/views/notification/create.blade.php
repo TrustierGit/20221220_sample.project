@@ -2,14 +2,7 @@
   
   <div class="container px-5 py-4 mx-auto">
   <h1 class="text-2xl font-medium title-font text-gray-900 pt-12 pb-4">■お知らせ投稿</h1>
-    <div class="panel-body bg-white p-4 border-2 border-gray-300">
-                    {{-- フラッシュメッセージの表示 --}}
-                    @if (session('status'))
-                        <div class="alert alert-info">
-                            <div class="text-2xl font-medium text-blue-900 mb-8 text-center">{{ session('status') }}
-                        </div>
-                    @endif
-
+  
                 <a href="{{ route('notification.new')}}" class="text-white bg-green-500 border-0 py-2 px-6 focus:outline-none hover:bg-green-600 rounded text-lg font-bold">追加</a>
                 <section class="text-gray-600 body-font"> 
                   
@@ -47,7 +40,7 @@
                 <span class="bg-red-700 text-white p-2 rounded">障害情報</span>
               @endif
             </td>
-            <td class="px-4 py-3 border border-slate-400 text-left">{!!nl2br(e(\Illuminate\Support\Str::limit($notification->text_message,90,'　　...　　')))!!}</td>
+            <td class="px-4 py-3 border border-slate-400 bg-white text-left">{!!nl2br(e(\Illuminate\Support\Str::limit($notification->text_message,90,'　　...　　')))!!}</td>
             <!-- <td style="word-wrap:break-word;" class="px-4 py-3 border border-slate-400 text-left">{!!nl2br(e($notification->text_message))!!}</td> -->
             
             <td class="border border-slate-400 bg-white">
@@ -65,5 +58,18 @@
     </div>
 
 </section>  
+
+    {{-- フラッシュメッセージの表示 --}}
+    <script src="{{ asset('js/jquery.min2.js')}}"></script>
+    <script src="{{ asset('js/toastr.min.js')}}"></script>
+    <script src="{{ asset('js/toastr.js')}}"></script>
+        <script>
+            @if (session('status'))
+                $(function () {
+                        toastr.success('{{ session('status') }}');
+                        $(".toast").attr("style","top:100px");
+                });
+            @endif
+    </script>
   
 </x-app-layout>
