@@ -19,6 +19,7 @@ class DatabaseSeeder extends Seeder
         $this->call([Organization::class],);
         $this->call([Holiday::class],);
 
+
     }
     }
 
