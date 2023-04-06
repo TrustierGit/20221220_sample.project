@@ -9,7 +9,8 @@ use App\Calendar\CalendarView;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use Maatwebsite\Excel\Facades\Excel; 
-use App\Exports\ReservationsExport; 
+use App\Exports\ReservationsExport;
+use App\Exports\ReservationsExport_for_super;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Collection;
@@ -85,6 +86,23 @@ class ReservationController extends Controller
         }
     
     }
+
+    /**
+     * super管理者向けreservation履歴export
+     * 
+     */
+    public function super_export(Request $request){
+
+        $exports = new ReservationsExport_for_super($request);
+        $exists = $exports->collection()->count();
+ 
+        if($exists > 0){
+             return Excel::download($exports, 'reservation_list.csv'); 
+         }else{
+             return redirect('/superuser/reservation_lists')->with('status','該当データはありません');
+         }
+     
+     }
 
     /**
      * download一覧

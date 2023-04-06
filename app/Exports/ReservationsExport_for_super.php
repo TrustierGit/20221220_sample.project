@@ -16,7 +16,7 @@ use Carbon\Carbon;
 /**
  * csvエクスポートクラス
  */
-class ReservationsExport implements FromCollection,WithHeadings, WithStrictNullComparison,WithMapping
+class ReservationsExport_for_super implements FromCollection,WithHeadings, WithStrictNullComparison,WithMapping
 {
     public $request_con;
     
@@ -30,19 +30,16 @@ class ReservationsExport implements FromCollection,WithHeadings, WithStrictNullC
 
     public function collection()
     {
-        
         $reservation_date=$this->request_con->ymd;
         $start = $reservation_date .'-01';
         $end = $reservation_date . '-31';
-        $user_organaization = Auth::user()->domain_organization;
-        return Reservation::where('domain_organization',$user_organaization)
-	        ->Where('date_reservation','>=',$start)
-	        ->Where('date_reservation','<=',$end)
-	        ->select(['id','domain_organization','mode_reserve','date_reservation','email_staff','text_remarks','updated_at'])
-            ->get();
 
+        return Reservation::where('date_reservation','>=',$start)
+            ->Where('date_reservation','<=',$end)
+            ->select(['id','domain_organization','mode_reserve','date_reservation','email_staff','text_remarks','updated_at'])
+            ->get();
     
-$employeeData = $employee
+        $employeeData = $employee
                 ->select(['id', 'name', 'department'])
                 ->get();
 
