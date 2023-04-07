@@ -10,14 +10,36 @@ use Illuminate\Support\Facades\DB;
 
 class UserProvisioningController extends Controller
 {
+
+    private $message;
+
+    public function __construct(){
+        $this->message = '';
+    }
+
     public function UserProvisioning(){
 
-        $this->message='トランザクションスタート...';
-        return $this->message;
-        DB::transaction(function () {
-            // DB::Organization
-            // ★★★20230406追加予定★★★
+
+        $this->message='トランザクションスタート....'.config('maintenance.user_eol');
+        DB::transaction(function (Request $request) {
+              DB::table('users')
+                    // ->where('domain_organization' = $request)
+                    ->where('domain_organization' = 'marumaru.co.jp')
+                    ->get();
+
+            // ★★★作成したい流れ★★★
+            // トランザクションスタート
+                    １．自治体絞り込み
+            //     ２．UPD 一回全部論理削除（一般ユーザ）
+            //     ３．ファイル読み込み
+            //     　３－１．UPD ユーザデータアップデート（上書き）
+            //     　　３－１で0件（データなしなら）３－２へ
+            //     　３－２．INS 0件ならif文の中でインサート
+            //     ４．DEL 論理削除を一括デリート
+            // トランザクションエンド
         });
+
+        return $this->message;
         
 
     //     $userSplFileObject = new \SplFileObject(__DIR__ . '/data/users.csv');

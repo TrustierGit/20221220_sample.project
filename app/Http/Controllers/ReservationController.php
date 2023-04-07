@@ -99,7 +99,7 @@ class ReservationController extends Controller
         if($exists > 0){
              return Excel::download($exports, 'reservation_list.csv'); 
          }else{
-             return redirect('/superuser/reservation_lists')->with('status','該当データはありません');
+             return redirect('superuser/download')->with('status','該当データはありません');
          }
      
      }
@@ -113,7 +113,26 @@ class ReservationController extends Controller
         return view ('download_link');
     }
 
+    /**
+     * 予約function用
+     */
+    public $start_info;
+    public $info;
+    // public $user_id;
+    // public $array;
 
+    
+    function __construct(){
+		$this->start_info ='';
+		$this->info ='';
+        // $this->user_id = Auth::user()->id;
+        // $this->array = [    $button,
+        //                     $user_organaization,
+        //                     $user_mode,
+        //                     $rsvdate,
+        //                     $user_email,
+        //                 ];
+	}
 
     /**
      * ストアドプロシージャから予約の登録($button=0)／取消($button=1)を行う
@@ -133,46 +152,47 @@ class ReservationController extends Controller
         $button = ($request->has('make_reservation'))? 1 : 0;
 
         $array=[
-                $button,
-                $user_organaization,
-                $user_mode,
-                $rsvdate,
-                $user_email,
+            $button,
+            $user_organaization,
+            $user_mode,
+            $rsvdate,
+            $user_email,
             ];
+
         /*
             ストアドプロシージャ呼び出し
             注意：@msgはストアドプロシージャ内でのOUTPUT（戻り値）を格納する変数
                   戻り値を取得するために再度DB::selectで取得
         */ 
-
-        //log開始
-        $log_info[]='CALL EDIT_RESERVATION';
-        $log_info[]=$array;
-
-        $log_info[]=[
-            'StoredName'=>'CALL EDIT_RESERVATION'
-            ,'info'=>'start'
-            ,'Param'=>$array
-        ];
-
-        $start_info = json_encode($log_info);
         $user_id = Auth::user()->id;
-        $login_time_id = DB::table('logs')
-                        ->where('user_id' ,'=',$user_id)
-                        ->max('id');
+        $this->logmake('start');
+        $this->logwrite(json_encode($log_info));
+        
+        // $log_info=[];
+        // $log_info['log']=[
+        //     'StoredName'=>'CALL EDIT_RESERVATION'
+        //     ,'info'=>'start'
+        //     ,'Param'=>$array
+        // ];
 
-        $login_time = Log::find($login_time_id)->login_time;
+        // $start_info = json_encode($log_info);
+        // $user_id = Auth::user()->id;
+        // $login_time_id = DB::table('logs')
+        //                 ->where('user_id' ,'=',$user_id)
+        //                 ->max('id');
 
-            Log::create(
-                [
-                'user_id' => $user_id,
-                'email' => AUth::user()->email,
-                'ip_address' => request()->ip(),
-                'info' => $start_info,
-                'user_agent' => request()->userAgent(),
-                'login_time' => $login_time
-                ]
-            );
+        // $login_time = Log::find($login_time_id)->login_time;
+
+            // Log::create(
+            //     [
+            //     'user_id' => $user_id,
+            //     'email' => AUth::user()->email,
+            //     'ip_address' => request()->ip(),
+            //     'info' => $start_info,
+            //     'user_agent' => request()->userAgent(),
+            //     'login_time' => $login_time
+            //     ]
+            // );
         //プロシージャ呼び出し
         try{  
             DB::statement('CALL EDIT_RESERVATION(?,?,?,?,?,@msg)',$array);
@@ -181,67 +201,103 @@ class ReservationController extends Controller
         }catch (\Exception $e) {
             //プロシージャ呼び出しで失敗時ログ
             $message = $e->getMessage();
-            $substr_message = substr($message,0,4000);
-            Log::create(
-               [
-               'user_id' => $user_id,
-               'email' => AUth::user()->email,
-               'ip_address' => request()->ip(),
-               'info' => $substr_message,
-               'user_agent' => request()->userAgent(),
-               'login_time' => $login_time
-               ] 
-               );
-        }
+            $substr_message = [substr($message,0,4000)]; 
+        //     Log::create(
+        //        [
+        //        'user_id' => $user_id,
+        //        'email' => AUth::user()->email,
+        //        'ip_address' => request()->ip(),
+        //        'info' => $substr_message,
+        //        'user_agent' => request()->userAgent(),
+        //        'login_time' => $login_time
+        //        ] 
+        //        );
+        // }
         //終了ログ
-        $log_end[]=[
-            'StoredName'=>'CALL EDIT_RESERVATION'
-            ,'info'=>'end'
-            ,'Param'=>$array
-        ];
-        $end_info = json_encode($log_end);
+        // $log_end[]=[
+        //     'StoredName'=>'CALL EDIT_RESERVATION'
+        //     ,'info'=>'end'
+        //     ,'Param'=>$array
+        // ];
+        
+        $end_status = ['msg'=>$status];
 
-        Log::create(
-            [
-            'user_id' => $user_id,
-            'email' => AUth::user()->email,
-            'ip_address' => request()->ip(),
-            'info' => $status,
-            'user_agent' => request()->userAgent(),
-            'login_time' => $login_time
-            ]
-        );
+        // Log::create(
+        //     [
+        //     'user_id' => $user_id,
+        //     'email' => AUth::user()->email,
+        //     'ip_address' => request()->ip(),
+        //     'info' => json_encode($end_status),
+        //     'user_agent' => request()->userAgent(),
+        //     'login_time' => $login_time
+        //     ]
+        // );
 
         return redirect('/user/reservation_list')->with('status', $status);
 
+    }}
+    /**
+     * 
+     * @param $request
+     * 
+     */
+    public function logmake($info){
+
+        $login_time_id = DB::table('logs')
+                        ->where('user_id' ,'=',$user_id)
+                        ->max('id');
+
+        $login_time = Log::find($login_time_id)->login_time;
+
+        $log_info=[];
+        $log_info['log']=[
+            'StoredName'=>'CALL EDIT_RESERVATION'
+            ,'info'=>$info
+            ,'Param'=>$array
+        ];
+
+        $start_info = json_encode($log_info);
     }
 
-    /**
+    public function logwrite($start_info){
+           
+            Log::create(
+                [
+                    'user_id' => $this->user_id,
+                    'email' => AUth::user()->email,
+                    'ip_address' => request()->ip(),
+                    'info' => $start_info,
+                    'user_agent' => request()->userAgent(),
+                    'login_time' => $login_time
+                ]
+            );
+    }
+        /**
      * 予約登録画面のAjaxから呼び出される処理
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response + $result_arr JSON形式
      */
     public function ajax(Request $request){
-        $rsvdate = $request->input('days');
-        $user_email = Auth::user()->email;
-        $user_organaization = Auth::user()->domain_organization;
+            $rsvdate = $request->input('days');
+            $user_email = Auth::user()->email;
+            $user_organaization = Auth::user()->domain_organization;
 
-        $is_reserved =  DB::table('reservations')
-                            ->where('domain_organization' ,'=',$user_organaization)
-                            ->where('date_reservation' ,'=',$rsvdate)
-                            ->where('email_staff' ,'=',$user_email)
-                            ->get()->count();
-        $counts = DB::table('reservations')
-                            ->where('domain_organization' ,'=',$user_organaization)
-                            ->whereDate('date_reservation' ,'=',$rsvdate)
-                            ->get()->count();
-        
-        $result_arr[] = [
-            "email"=>$user_email ,
-            "days"=>$rsvdate,
-            "is_reserved"=>$is_reserved,
-            "counts"=>$counts,
-        ];
+            $is_reserved =  DB::table('reservations')
+                                ->where('domain_organization' ,'=',$user_organaization)
+                                ->where('date_reservation' ,'=',$rsvdate)
+                                ->where('email_staff' ,'=',$user_email)
+                                ->get()->count();
+            $counts = DB::table('reservations')
+                                ->where('domain_organization' ,'=',$user_organaization)
+                                ->whereDate('date_reservation' ,'=',$rsvdate)
+                                ->get()->count();
+            
+            $result_arr[] = [
+                "email"=>$user_email ,
+                "days"=>$rsvdate,
+                "is_reserved"=>$is_reserved,
+                "counts"=>$counts,
+            ];
 
         return json_encode($result_arr);
     }

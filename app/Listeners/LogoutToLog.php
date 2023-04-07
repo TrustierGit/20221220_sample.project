@@ -35,6 +35,9 @@ class LogoutToLog
             ->where('user_id' ,'=',$user_id)
             ->max('id');
 
+            $info = ['logout'];
+            $logout_info = json_encode($info);
+
             $login_time = Log::find($login_time_id)->login_time;
             
             Log::create(
@@ -42,7 +45,7 @@ class LogoutToLog
             'user_id' => $user_id,
             'email' => $event->user->email,
             'ip_address' => request()->ip(),
-            'info' => 'logout',
+            'info' => $logout_info,
             'user_agent' => request()->userAgent(),
             'login_time' => $login_time
 
