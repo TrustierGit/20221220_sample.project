@@ -116,22 +116,14 @@ class ReservationController extends Controller
     /**
      * 予約function用
      */
-    public $start_info;
-    public $info;
-    // public $user_id;
-    // public $array;
+    
+    public $array;
 
     
     function __construct(){
-		$this->start_info ='';
-		$this->info ='';
-        // $this->user_id = Auth::user()->id;
-        // $this->array = [    $button,
-        //                     $user_organaization,
-        //                     $user_mode,
-        //                     $rsvdate,
-        //                     $user_email,
-        //                 ];
+		
+        $this->array ='';
+       
 	}
 
     /**
@@ -165,34 +157,12 @@ class ReservationController extends Controller
                   戻り値を取得するために再度DB::selectで取得
         */ 
         $user_id = Auth::user()->id;
-        $this->logmake('start');
-        $this->logwrite(json_encode($log_info));
-        
-        // $log_info=[];
-        // $log_info['log']=[
-        //     'StoredName'=>'CALL EDIT_RESERVATION'
-        //     ,'info'=>'start'
-        //     ,'Param'=>$array
-        // ];
+        $log_head = $this->loginfo('start',$array,'ストアドプロシージャ呼び出し');
+        $login_time_id = DB::table('logs')
+                        ->where('user_id' ,'=',$user_id)
+                        ->max('id');
+        $this->logmake($log_head,$login_time_id);
 
-        // $start_info = json_encode($log_info);
-        // $user_id = Auth::user()->id;
-        // $login_time_id = DB::table('logs')
-        //                 ->where('user_id' ,'=',$user_id)
-        //                 ->max('id');
-
-        // $login_time = Log::find($login_time_id)->login_time;
-
-            // Log::create(
-            //     [
-            //     'user_id' => $user_id,
-            //     'email' => AUth::user()->email,
-            //     'ip_address' => request()->ip(),
-            //     'info' => $start_info,
-            //     'user_agent' => request()->userAgent(),
-            //     'login_time' => $login_time
-            //     ]
-            // );
         //プロシージャ呼び出し
         try{  
             DB::statement('CALL EDIT_RESERVATION(?,?,?,?,?,@msg)',$array);
@@ -202,76 +172,62 @@ class ReservationController extends Controller
             //プロシージャ呼び出しで失敗時ログ
             $message = $e->getMessage();
             $substr_message = [substr($message,0,4000)]; 
-        //     Log::create(
-        //        [
-        //        'user_id' => $user_id,
-        //        'email' => AUth::user()->email,
-        //        'ip_address' => request()->ip(),
-        //        'info' => $substr_message,
-        //        'user_agent' => request()->userAgent(),
-        //        'login_time' => $login_time
-        //        ] 
-        //        );
-        // }
-        //終了ログ
-        // $log_end[]=[
-        //     'StoredName'=>'CALL EDIT_RESERVATION'
-        //     ,'info'=>'end'
-        //     ,'Param'=>$array
-        // ];
-        
-        $end_status = ['msg'=>$status];
+            Log::create(
+               [
+               'user_id' => $user_id,
+               'email' => AUth::user()->email,
+               'ip_address' => request()->ip(),
+            //    'info' => $substr_message,
+               'info' => json_encode($log_head),
+               'user_agent' => request()->userAgent(),
+               'login_time' => $login_time
+               ] 
+               );
+        }
+        // 終了ログ
+        $log_head = $this->loginfo('end',$array,$status);
 
-        // Log::create(
-        //     [
-        //     'user_id' => $user_id,
-        //     'email' => AUth::user()->email,
-        //     'ip_address' => request()->ip(),
-        //     'info' => json_encode($end_status),
-        //     'user_agent' => request()->userAgent(),
-        //     'login_time' => $login_time
-        //     ]
-        // );
+        
+        $this->logmake($log_head,$login_time_id);
 
         return redirect('/user/reservation_list')->with('status', $status);
 
-    }}
+    }
+
+    /**
+     * logのinfoカラム定義
+     */
+    public function loginfo($info,$array,$status=''){
+        $log_info[]=[
+            'StoredName'=>'CALL EDIT_RESERVATION'
+            ,'info'=>$info
+            ,'Param'=>$array
+            ,'msg'=>$status
+        ];
+        return $log_info;
+    }
+    /**
+     * log生成
+     */
+    public function logmake($log_head,$login_time_id){
+       
+        Log::create(
+            [
+            'user_id' => Auth::user()->id,
+            'email' =>AUth::user()->email,
+            'ip_address' => request()->ip(),
+            'info' => json_encode($log_head),
+            'user_agent' => request()->userAgent(),
+            'login_time' => Log::find($login_time_id)->login_time
+            ]
+        );
+    }
     /**
      * 
      * @param $request
      * 
      */
-    public function logmake($info){
-
-        $login_time_id = DB::table('logs')
-                        ->where('user_id' ,'=',$user_id)
-                        ->max('id');
-
-        $login_time = Log::find($login_time_id)->login_time;
-
-        $log_info=[];
-        $log_info['log']=[
-            'StoredName'=>'CALL EDIT_RESERVATION'
-            ,'info'=>$info
-            ,'Param'=>$array
-        ];
-
-        $start_info = json_encode($log_info);
-    }
-
-    public function logwrite($start_info){
-           
-            Log::create(
-                [
-                    'user_id' => $this->user_id,
-                    'email' => AUth::user()->email,
-                    'ip_address' => request()->ip(),
-                    'info' => $start_info,
-                    'user_agent' => request()->userAgent(),
-                    'login_time' => $login_time
-                ]
-            );
-    }
+    
         /**
      * 予約登録画面のAjaxから呼び出される処理
      * @param  \Illuminate\Http\Request  $request
