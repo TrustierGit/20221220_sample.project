@@ -113,6 +113,7 @@ class ReservationController extends Controller
         return view ('download_link');
     }
 
+
     /**
      * 予約function用
      */
@@ -124,8 +125,8 @@ class ReservationController extends Controller
 		
         $this->array ='';
        
-	}
-
+    }
+    
     /**
      * ストアドプロシージャから予約の登録($button=0)／取消($button=1)を行う
      * @param  \Illuminate\Http\Request  $request
@@ -172,22 +173,11 @@ class ReservationController extends Controller
             //プロシージャ呼び出しで失敗時ログ
             $message = $e->getMessage();
             $substr_message = [substr($message,0,4000)]; 
-            Log::create(
-               [
-               'user_id' => $user_id,
-               'email' => AUth::user()->email,
-               'ip_address' => request()->ip(),
-            //    'info' => $substr_message,
-               'info' => json_encode($log_head),
-               'user_agent' => request()->userAgent(),
-               'login_time' => $login_time
-               ] 
-               );
+            $this->logmake($substr_message,$login_time_id);
         }
         // 終了ログ
         $log_head = $this->loginfo('end',$array,$status);
 
-        
         $this->logmake($log_head,$login_time_id);
 
         return redirect('/user/reservation_list')->with('status', $status);
