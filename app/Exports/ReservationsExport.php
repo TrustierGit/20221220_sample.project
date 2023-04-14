@@ -38,6 +38,8 @@ class ReservationsExport implements FromCollection,WithHeadings, WithStrictNullC
         return Reservation::where('domain_organization',$user_organaization)
 	        ->Where('date_reservation','>=',$start)
 	        ->Where('date_reservation','<=',$end)
+            //★id,'text_remarks'がいらない
+            // ドメイン・日付（予約日）・メアドでソート
 	        ->select(['id','domain_organization','mode_reserve','date_reservation','email_staff','text_remarks','updated_at'])
             ->get();
 
