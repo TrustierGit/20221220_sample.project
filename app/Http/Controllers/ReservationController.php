@@ -188,8 +188,9 @@ class ReservationController extends Controller
      * logのinfoカラム定義
      */
     public function loginfo($info,$array,$status=''){
-        $log_info[]=[
-            'StoredName'=>'CALL EDIT_RESERVATION'
+        $log_info=[
+            'function' =>'register'
+            ,'StoredName'=>'CALL EDIT_RESERVATION'
             ,'info'=>$info
             ,'Param'=>$array
             ,'msg'=>$status

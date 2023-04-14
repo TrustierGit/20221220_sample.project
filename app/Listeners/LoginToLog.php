@@ -28,13 +28,17 @@ class LoginToLog
      */
     public function handle(Login $event)
     {
-        
+            $log_info=[
+                'function' =>'Auth'
+                ,'msg'=>'ログイン'
+            ];
+
 	    Log::create(
         [
 	    'user_id' => $event->user->id,
 	    'email' => $event->user->email,
         'ip_address' => request()->ip(),
-        'info' => json_encode(['login']),
+        'info' => json_encode($log_info),
         'user_agent' => request()->userAgent(),
 	    'login_time' => \Carbon\Carbon::now()
 

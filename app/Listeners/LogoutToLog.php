@@ -37,13 +37,18 @@ class LogoutToLog
 
 
             $login_time = Log::find($login_time_id)->login_time;
+
+            $log_info=[
+                'function' =>'Auth'
+                ,'msg'=>'ログアウト'
+            ];
             
             Log::create(
             [
             'user_id' => $user_id,
             'email' => $event->user->email,
             'ip_address' => request()->ip(),
-            'info' => json_encode(['logout']),
+            'info' => json_encode($log_info),
             'user_agent' => request()->userAgent(),
             'login_time' => $login_time
 
