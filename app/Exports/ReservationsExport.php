@@ -34,13 +34,16 @@ class ReservationsExport implements FromCollection,WithHeadings, WithStrictNullC
         $reservation_date=$this->request_con->ymd;
         $start = $reservation_date .'-01';
         $end = $reservation_date . '-31';
-        $user_organaization = Auth::user()->domain_organization;
+        // ★スクロール選択
+        // $user_organaization = Auth::user()->domain_organization;
+        $user_organaization =$this->request_con->domain_organization;
         return Reservation::where('domain_organization',$user_organaization)
 	        ->Where('date_reservation','>=',$start)
 	        ->Where('date_reservation','<=',$end)
             //★id,'text_remarks'がいらない
             // ドメイン・日付（予約日）・メアドでソート
-	        ->select(['id','domain_organization','mode_reserve','date_reservation','email_staff','text_remarks','updated_at'])
+            ->select(['domain_organization','mode_reserve','date_reservation','email_staff','updated_at'])
+            ->orderByRaw('domain_organization asc, date_reservation asc, email_staff asc')
             ->get();
 
     
@@ -54,12 +57,10 @@ $employeeData = $employee
     public function map($row) :array
         {
             return [
-                $row->id,
                 $row->domain_organization,
                 $row->mode_reserve,
                 $row->date_reservation,
                 $row->email_staff,
-                $row->text_remarks,
                 //timestampからdatetimeに変換
                 Carbon::parse($row->updated_at)->__toString(),
             ];
@@ -69,12 +70,10 @@ $employeeData = $employee
     public function headings():array
 	{
 		return [
-				'id',  
                 '自治体ドメイン名',
                 'アカウントフラグ（0:通常/1:常時）',
 				'予約日', 
-                '職員メールアドレス',
-				'備考欄',  
+                '職員メールアドレス',  
                 'データ更新日'
                  
 			]; 

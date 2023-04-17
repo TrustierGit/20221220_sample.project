@@ -62,7 +62,7 @@ Route::prefix('admin')->middleware(['auth'])->middleware('can:admin-higher')->gr
 Route::prefix('superuser')->middleware(['auth'])->middleware('can:superuser')->group(function(){
     Route::get('/ResetKey', 'App\Http\Controllers\MakeApiKeyController@ShowAPIKey')->name('ShowAPIKey');
     Route::post('/ResetKey', 'App\Http\Controllers\MakeApiKeyController@ResetKey')->name('ResetKey');
-    Route::get('/download', 'App\Http\Controllers\ReservationController@lists_for_super')->name('super.reservation_lists');
+    // Route::get('/download', 'App\Http\Controllers\ReservationController@lists_for_super')->name('super.reservation_lists');
     Route::get('/export', 'App\Http\Controllers\ReservationController@super_export');
     Route::get('/hoge', 'App\Http\Controllers\UserProvisioningController@UserProvisioning');
     Route::get('/UserProvisioning', 'App\Http\Controllers\UserProvisioningController@csv_uploader');

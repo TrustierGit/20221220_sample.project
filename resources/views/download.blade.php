@@ -14,12 +14,22 @@
                 <div class="block ml-6 mr-6">
                                 <form  method="get" action=/admin/export>
                                   @csrf 
-                                      <label for="date" class="text-xl text-gray-600">対象年月</label>
+                                  <div class="py-4">
+                                      <label for="name_organization" class="text-xl text-gray-600">対象自治体</label>
+                                      <select class="rounded text-xl text-gray-600 bg-indigo-50 py-4" id="name_organization" name="name_organization">
+                                            @foreach($organizations as $organization)
+                                              <option>{{$organization->name_organization}}</option>
+                                            @endforeach
+                                      </select>
+                                  </div>
+                                  <div class="py-4">
+                                      <label for="date" class="text-xl text-gray-600">対象年月　</label>
                                       <select class="rounded text-xl text-gray-600 bg-indigo-50 py-4" id="date" name="ymd" >
                                             @for($i=0;$i<24;$i++)
                                               <option>{{\Carbon\Carbon::now()->submonth($i)->format("Y-m")}}</option>
                                             @endfor
                                       </select>
+                                  </div>
                                       <button class="flex mx-auto mt-16 text-white bg-indigo-500 border-0 py-2 px-10 focus:outline-none hover:bg-indigo-600 rounded text-2xl" action=/admin/export>ダウンロード</button>
                                 </form>          
                 </div>

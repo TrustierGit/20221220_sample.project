@@ -15,6 +15,7 @@ use Carbon\Carbon;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Collection;
 use App\Models\Log;
+use App\Models\Organization;
 
 
 
@@ -27,16 +28,21 @@ class ReservationController extends Controller
      */
     public function index(Request $request)
     {
-        return view ('download');
+        if(Auth::User()->mode_admin =='1'){
+            $organizations = DB::table('organizations')->where('domain_organization','=',Auth::User()->domain_organization)->get();
+        }elseif(Auth::User()->mode_admin =='9'){
+            $organizations = DB::table('organizations')->get();
+        }
+        return view ('download',compact('organizations'));
     }
 
     /**
      * super管理者用ダウンロード画面
     */
-    public function lists_for_super(Request $request)
-    {
-        return view ('super.reservation_lists');
-    }
+    // public function lists_for_super(Request $request)
+    // {
+    //     return view ('super.reservation_lists');
+    // }
 
 
     /**
@@ -86,23 +92,6 @@ class ReservationController extends Controller
         }
     
     }
-
-    /**
-     * super管理者向けreservation履歴export
-     * 
-     */
-    public function super_export(Request $request){
-
-        $exports = new ReservationsExport_for_super($request);
-        $exists = $exports->collection()->count();
- 
-        if($exists > 0){
-             return Excel::download($exports, 'reservation_list.csv'); 
-         }else{
-             return redirect('superuser/download')->with('status','該当データはありません');
-         }
-     
-     }
 
     /**
      * download一覧
