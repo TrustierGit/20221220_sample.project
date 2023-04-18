@@ -15,18 +15,18 @@
                                 <form  method="get" action=/admin/export>
                                   @csrf 
                                   <div class="py-4">
-                                      <label for="name_organization" class="text-xl text-gray-600">対象自治体</label>
-                                      <select class="rounded text-xl text-gray-600 bg-indigo-50 py-4" id="name_organization" name="name_organization">
+                                      <label for="domain_organization" class="text-xl text-gray-600">対象自治体</label>
+                                      <select class="rounded text-xl text-gray-600 bg-indigo-50 py-4" id="domain_organization" name="domain_organization">
                                             @foreach($organizations as $organization)
-                                              <option>{{$organization->name_organization}}</option>
+                                              <option value="{{$organization->domain_organization}}">{{$organization->name_organization}}</option>
                                             @endforeach
                                       </select>
                                   </div>
                                   <div class="py-4">
                                       <label for="date" class="text-xl text-gray-600">対象年月　</label>
                                       <select class="rounded text-xl text-gray-600 bg-indigo-50 py-4" id="date" name="ymd" >
-                                            @for($i=0;$i<24;$i++)
-                                              <option>{{\Carbon\Carbon::now()->submonth($i)->format("Y-m")}}</option>
+                                            @for($i=0;$i < 24;$i++)
+                                            <option value='{{\Carbon\Carbon::now()->submonth($i)->format("Y-m-t")}}'>{{\Carbon\Carbon::now()->submonth($i)->format("Y年m月")}}</option>
                                             @endfor
                                       </select>
                                   </div>
