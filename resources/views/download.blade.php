@@ -10,7 +10,7 @@
           <div class="text-3xl text-center">
                  ― {{Auth::user()->organization->name_organization}} 予約履歴ダウンロード　―
           </div>
-            <div class="px-12 py-24 text-2xl flex flex-auto">
+            <div class="text-2xl flex flex-auto">
                 <div class="block ml-6 mr-6">
                                 <form  method="get" action=/admin/export>
                                   @csrf 
@@ -34,7 +34,7 @@
                                 </form>          
                 </div>
                 <div class="block ml-24 mr-6 border-2 rouded border-gray-400 p-8 base_admin_authority">
-                        <ul class="list-disc text-xl">
+                        <ul class="list-none text-xl">
                           <li>過去２年分のデータがダウンロード可能です。</li>
                           <li>該当データの無い月はダウンロードされません。</li>
                           <li>UTF-８（BOM付き）で出力されます。</li>
