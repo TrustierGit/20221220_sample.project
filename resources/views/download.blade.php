@@ -33,7 +33,7 @@
                                       <button class="flex mx-auto mt-16 text-white bg-indigo-500 border-0 py-2 px-10 focus:outline-none hover:bg-indigo-600 rounded text-2xl" action=/admin/export>ダウンロード</button>
                                 </form>          
                 </div>
-                <div class="block ml-24 mr-6 border-2 rouded border-gray-400 p-8 base_admin_authority">
+                <div class="ml-24 mr-6 border-2 rouded border-gray-400 p-8 base_admin_authority">
                         <ul class="list-none text-xl">
                           <li>過去２年分のデータがダウンロード可能です。</li>
                           <li>該当データの無い月はダウンロードされません。</li>
