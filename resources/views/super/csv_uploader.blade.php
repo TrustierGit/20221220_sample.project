@@ -7,6 +7,14 @@
     <form action="" method="post" enctype="multipart/form-data">
         {{ csrf_field() }}
         <div class="row">
+        <label for="domain_organization" class="text-xl text-gray-600">対象自治体</label>
+        <div class="col-11">
+                    <select class="rounded text-xl text-gray-600 bg-indigo-50 py-4" id="domain_organization" name="domain_organization">
+                        @foreach($organizations as $organization)
+                            <option value="{{$organization->domain_organization}}">{{$organization->name_organization}}</option>
+                        @endforeach
+                    </select>
+        </div>
             <label class="col-1 text-right" for="form-file-1">File:</label>
             <div class="col-11">
                 <div class="custom-file">
@@ -15,7 +23,8 @@
                 </div>
             </div>
         </div>
-        <button type="submit" class="btn btn-success btn-block">送信</button>
+        <button class="mt-16 text-white bg-indigo-500 border-0 py-2 px-10 focus:outline-none hover:bg-indigo-600 rounded text-2xl" type="submit" class="btn btn-success btn-block">送信</button>
+        <!-- <button type="submit" class="btn btn-success btn-block">送信</button> -->
     </form>
     <script>
     // ファイルを選択すると、入力フォーム部分にファイル名を表示
@@ -26,15 +35,15 @@
     </body>
     </html>
 
-    @if(Session::has('flashmessage'))
+    <!-- @if(Session::has('flashmessage'))
     <script>
         $(window).on('load',function(){
             $('#myModal').modal('show');
         });
-    </script>
+    </script> -->
 
     <!-- モーダルウィンドウの中身 -->
-    <div class="modal fade" id="myModal" tabindex="-1"
+    <!-- <div class="modal fade" id="myModal" tabindex="-1"
          role="dialog" aria-labelledby="label1" aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
@@ -51,7 +60,26 @@
             </div>
         </div>
     </div>
-    @endif
+    @endif -->
+
+     {{-- フラッシュメッセージの表示 --}}
+    <script src="{{ asset('js/jquery.min2.js')}}"></script>
+    <script src="{{ asset('js/toastr.min.js')}}"></script>
+    <script src="{{ asset('js/toastr.js')}}"></script>
+        <script>
+            @if (session('status'))
+                $(function () {
+                        toastr.success('{{ session('status') }}');
+                        $(".toast").attr("style","top:100px");
+                });
+            @endif
+            @if (session('error'))
+                $(function () {
+                        toastr.warning('{{ session('error') }}');
+                        $(".toast").attr("style","top:100px");
+                });
+            @endif
+        </script>
               
   </div>
  

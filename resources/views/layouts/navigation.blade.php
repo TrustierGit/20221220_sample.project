@@ -58,6 +58,14 @@
                     </x-nav-link>
                 </div>
                 @endcan
+                @can('superuser')
+                <div class="hidden sm:-my-px sm:flex">
+                    <x-nav-link :href="route('UserProvisioning')" :active="request()->routeIs('UserProvisioning')">
+                        {{ __('プロビジョニング') }}
+                    </x-nav-link>
+                </div>
+                @endcan
+
                 
 
             </div>

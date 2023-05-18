@@ -11,6 +11,8 @@ use Goodby\CSV\Import\Standard\LexerConfig;
 use Goodby\CSV\Import\Standard\Lexer;
 use Goodby\CSV\Import\Standard\Interpreter;
 use App\Models\User;
+use Carbon\Carbon;
+use Illuminate\Support\Facades\Storage;
 
 
 
@@ -18,9 +20,11 @@ class UserProvisioningController extends Controller
 {
 
     private $message;
+    private $upload_date;
 
     public function __construct(){
         $this->message = '';
+        $this->upload_date=  Carbon::now()->format('YmdHis');
     }
 
     public function UserProvisioning(){
@@ -56,18 +60,44 @@ class UserProvisioningController extends Controller
             }
 
     }
-            public function csv_uploader(){
-                return view ('super.csv_uploader');
+            public function csv_uploader()
+            {
+                $organizations = DB::table('organizations')
+                                    ->where('mode_reserve','=','0')
+                                    ->where('flag_delete','=','0')
+                                    ->orderByRaw('name_organization asc')->get();
+                return view ('super.csv_uploader',compact('organizations'));
+                
             }
 
                 public function upload_regist(Request $rq)
                 {
                     // if($rq->hasFile('csv') && $rq->file('csv')->isValid()) {
-                    //     // CSV ファイル保存
-                    //     $tmpname = uniqid("CSVUP_").".".$rq->file('csv')->guessExtension(); //TMPファイル名
-                    //     $rq->file('csv')->move(public_path()."/csv/tmp",$tmpname);
-                    //     $tmppath = public_path()."/csv/tmp/".$tmpname;
+                    if($rq->file('csv')->getClientOriginalExtension() == "csv") {
+                        // CSV ファイル保存
+                        
+                        $tmpname = "CSVUP_".$this->upload_date.".".$rq->file('csv')->guessExtension(); //TMPファイル名
+                        $rq->file('csv')->move(public_path()."/csv/tmp",$tmpname);
+                        // ■tmppath使う？
+                        $tmppath = public_path()."/csv/tmp/".$tmpname;
 
+                        // ファイル内容取得
+                        $csv = file($tmppath);
+                        // 改行コードを統一
+                        // $csv = str_replace(array("\r\n","\r"), "\n", $csv);
+                        // // 行単位のコレクション作成
+                        // $data = collect(explode("\n", $csv));
+                        dd($csv);
+
+                        //★★return
+
+                    //     $comment = "取り込み成功";
+                    //     $subject = "status";
+                    // }else{
+                    //     $comment = "取り込みエラー：ファイル形式を確認してください。";
+                    //     $subject = "error";
+                        
+                    
                     //     // Goodby CSVの設定
                     //     $config_in = new LexerConfig();
                     //     $config_in
@@ -102,9 +132,12 @@ class UserProvisioningController extends Controller
                     //     }
                     //     // return redirect('/superuser/UserProvisioning')->with('flashmessage','CSVのデータを読み込みました。');
                     //     return redirect('/superuser/UserProvisioning');
-                    // }
+                    }
+                    // ★
+                    // return redirect('/superuser/UserProvisioning')->with($subject, $comment);
                     return redirect('/superuser/UserProvisioning');
                 }
+
 
                 private function get_csv_user($row)
                 {
