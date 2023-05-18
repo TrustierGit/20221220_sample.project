@@ -61,46 +61,47 @@ class UserProvisioningController extends Controller
 
                 public function upload_regist(Request $rq)
                 {
-                    if($rq->hasFile('csv') && $rq->file('csv')->isValid()) {
-                        // CSV ファイル保存
-                        $tmpname = uniqid("CSVUP_").".".$rq->file('csv')->guessExtension(); //TMPファイル名
-                        $rq->file('csv')->move(public_path()."/csv/tmp",$tmpname);
-                        $tmppath = public_path()."/csv/tmp/".$tmpname;
+                    // if($rq->hasFile('csv') && $rq->file('csv')->isValid()) {
+                    //     // CSV ファイル保存
+                    //     $tmpname = uniqid("CSVUP_").".".$rq->file('csv')->guessExtension(); //TMPファイル名
+                    //     $rq->file('csv')->move(public_path()."/csv/tmp",$tmpname);
+                    //     $tmppath = public_path()."/csv/tmp/".$tmpname;
 
-                        // Goodby CSVの設定
-                        $config_in = new LexerConfig();
-                        $config_in
-                            ->setFromCharset("SJIS-win")
-                            ->setToCharset("UTF-8") // CharasetをUTF-8に変換
-                            ->setIgnoreHeaderLine(true) //CSVのヘッダーを無視
-                        ;
-                        $lexer_in = new Lexer($config_in);
+                    //     // Goodby CSVの設定
+                    //     $config_in = new LexerConfig();
+                    //     $config_in
+                    //         ->setFromCharset("SJIS-win")
+                    //         ->setToCharset("UTF-8") // CharasetをUTF-8に変換
+                    //         ->setIgnoreHeaderLine(true) //CSVのヘッダーを無視
+                    //     ;
+                    //     $lexer_in = new Lexer($config_in);
 
-                        $datalist = array();
+                    //     $datalist = array();
 
-                        $interpreter = new Interpreter();
-                        $interpreter->addObserver(function (array $row) use (&$datalist){
-                        // 各列のデータを取得
-                        $datalist[] = $row;
-                        });
+                    //     $interpreter = new Interpreter();
+                    //     $interpreter->addObserver(function (array $row) use (&$datalist){
+                    //     // 各列のデータを取得
+                    //     $datalist[] = $row;
+                    //     });
 
-                        // CSVデータをパース
-                        $lexer_in->parse($tmppath,$interpreter);
+                    //     // CSVデータをパース
+                    //     $lexer_in->parse($tmppath,$interpreter);
 
-                        // TMPファイル削除
-                        unlink($tmppath);
+                    //     // TMPファイル削除
+                    //     unlink($tmppath);
 
-                        // 処理
-                        foreach($datalist as $row){
-                            // 各データ取り出し
-                            $csv_user = $this->get_csv_user($row);
-                            // DBへの登録
-                            // dd($csv_user);
-                            $this->updateOrCreate($csv_user);
-                        }
-                        // return redirect('/superuser/UserProvisioning')->with('flashmessage','CSVのデータを読み込みました。');
-                        return redirect('/superuser/UserProvisioning');
-                    }
+                    //     // 処理
+                    //     foreach($datalist as $row){
+                    //         // 各データ取り出し
+                    //         $csv_user = $this->get_csv_user($row);
+                    //         // DBへの登録
+                    //         // dd($csv_user);
+                    //         $this->updateOrCreate($csv_user);
+
+                    //     }
+                    //     // return redirect('/superuser/UserProvisioning')->with('flashmessage','CSVのデータを読み込みました。');
+                    //     return redirect('/superuser/UserProvisioning');
+                    // }
                     return redirect('/superuser/UserProvisioning');
                 }
 

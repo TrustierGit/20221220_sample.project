@@ -3,7 +3,7 @@
   <div class="container px:auto mx-auto">
     <h1 class="text-2xl font-medium title-font text-gray-900 pt-12">■ユーザープロビジョニング</h1> 
     
-    <p>CSVファイルを csv_users テーブルに登録します。</p>
+    <p>CSVファイルをインポートします。</p>
     <form action="" method="post" enctype="multipart/form-data">
         {{ csrf_field() }}
         <div class="row">
