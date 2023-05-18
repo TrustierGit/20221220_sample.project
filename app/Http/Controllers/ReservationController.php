@@ -19,6 +19,8 @@ use App\Models\Organization;
 
 
 
+
+
 class ReservationController extends Controller
 {
     /**
@@ -28,10 +30,18 @@ class ReservationController extends Controller
      */
     public function index(Request $request)
     {
+        // ★論理削除・moderesrv
         if(Auth::User()->mode_admin =='1'){
-            $organizations = DB::table('organizations')->where('domain_organization','=',Auth::User()->domain_organization)->get();
+            $organizations = DB::table('organizations')
+                                    ->where('domain_organization','=',Auth::User()->domain_organization)
+                                    ->where('mode_reserve','=','0')
+                                    ->where('flag_delete','=','0')
+                                    ->get();
         }elseif(Auth::User()->mode_admin =='9'){
-            $organizations = DB::table('organizations')->get();
+            $organizations = DB::table('organizations')
+                                    ->where('mode_reserve','=','0')
+                                    ->where('flag_delete','=','0')
+                                    ->orderByRaw('name_organization asc')->get();
         }
         return view ('download',compact('organizations'));
     }
@@ -84,6 +94,7 @@ class ReservationController extends Controller
 
        $exports = new ReservationsExport($request);
        $exists = $exports->collection()->count();
+    
 
        if($exists > 0){
 	        return Excel::download($exports, 'reservation_list.csv'); 

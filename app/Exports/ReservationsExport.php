@@ -32,13 +32,16 @@ class ReservationsExport implements FromCollection,WithHeadings, WithStrictNullC
     {
         
         $reservation_date=$this->request_con->ymd;
-        $start = $reservation_date .'-01';
-        $end = $reservation_date . '-31';
+        //置き換え
+        $start = substr($reservation_date,0,7) .'-01';
+        // $start = $reservation_date ;
+        $end = $reservation_date ;
         // ★スクロール選択
         // $user_organaization = Auth::user()->domain_organization;
         $user_organaization =$this->request_con->domain_organization;
         return Reservation::where('domain_organization',$user_organaization)
-	        ->Where('date_reservation','>=',$start)
+        // return Reservation::
+        ->Where('date_reservation','>=',$start)
 	        ->Where('date_reservation','<=',$end)
             //★id,'text_remarks'がいらない
             // ドメイン・日付（予約日）・メアドでソート
@@ -47,9 +50,9 @@ class ReservationsExport implements FromCollection,WithHeadings, WithStrictNullC
             ->get();
 
     
-$employeeData = $employee
-                ->select(['id', 'name', 'department'])
-                ->get();
+// $employeeData = $employee
+//                 ->select(['id', 'name', 'department'])
+//                 ->get();
 
     }
 
