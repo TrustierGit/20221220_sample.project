@@ -73,6 +73,7 @@ class UserProvisioningController extends Controller
                 public function upload_regist(Request $rq)
                 {
                     // if($rq->hasFile('csv') && $rq->file('csv')->isValid()) {
+                    // ★UTF-8のみ
                     if($rq->file('csv')->getClientOriginalExtension() == "csv") {
                         // CSV ファイル保存
                         
@@ -84,8 +85,8 @@ class UserProvisioningController extends Controller
                         // ファイル内容取得
                         $csv = file($tmppath);
                         // 改行コードを統一
-                        // $csv = str_replace(array("\r\n","\r"), "\n", $csv);
-                        // // 行単位のコレクション作成
+                        $csv = str_replace(array("\r\n","\r"), "\n", $csv);
+                        // 行単位のコレクション作成
                         // $data = collect(explode("\n", $csv));
                         dd($csv);
 
