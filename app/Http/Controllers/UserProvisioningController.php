@@ -83,6 +83,7 @@ class UserProvisioningController extends Controller
                         $tmppath = public_path()."/csv/tmp/".$tmpname;
 
                         // ファイル内容取得
+                        //aaa
                         $csv = file($tmppath);
                         // 改行コードを統一
                         $csv = str_replace(array("\r\n","\r"), "\n", $csv);
