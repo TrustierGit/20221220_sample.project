@@ -40,7 +40,7 @@ class ChangePasswordController extends Controller
       $user = \Auth::user();
       // 現在のパスワードを確認
       if (!password_verify($request->current_password, $user->password)) {
-        return redirect('/change_pass')
+        return redirect('/admin/change_pass')
                 ->with('warning', 'パスワードが違います');
       }
       // Validation（
@@ -48,7 +48,7 @@ class ChangePasswordController extends Controller
       // パスワードを保存
       $user->password = bcrypt($request->new_password);
       $user->save();
-      return redirect('/change_pass')
+      return redirect('/admin/change_pass')
               ->with('status', 'パスワードを変更しました');
     }
     }

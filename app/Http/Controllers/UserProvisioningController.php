@@ -79,25 +79,24 @@ class UserProvisioningController extends Controller
                         
                         $tmpname = "CSVUP_".$this->upload_date.".".$rq->file('csv')->guessExtension(); //TMPファイル名
                         $rq->file('csv')->move(public_path()."/csv/tmp",$tmpname);
-                        // ■tmppath使う？
                         $tmppath = public_path()."/csv/tmp/".$tmpname;
 
                         // ファイル内容取得
-                        //aaa
+
                         $csv = file($tmppath);
                         // 改行コードを統一
                         $csv = str_replace(array("\r\n","\r"), "\n", $csv);
                         // 行単位のコレクション作成
-                        // $data = collect(explode("\n", $csv));
                         dd($csv);
+                        // $data = collect(explode("\n", $csv));
 
                         //★★return
 
-                    //     $comment = "取り込み成功";
-                    //     $subject = "status";
-                    // }else{
-                    //     $comment = "取り込みエラー：ファイル形式を確認してください。";
-                    //     $subject = "error";
+                        $comment = "取り込み成功";
+                        $subject = "status";
+                    }else{
+                        $comment = "取り込みエラー：ファイル形式を確認してください。";
+                        $subject = "error";
                         
                     
                     //     // Goodby CSVの設定
@@ -136,8 +135,8 @@ class UserProvisioningController extends Controller
                     //     return redirect('/superuser/UserProvisioning');
                     }
                     // ★
-                    // return redirect('/superuser/UserProvisioning')->with($subject, $comment);
-                    return redirect('/superuser/UserProvisioning');
+                    return redirect('/superuser/UserProvisioning')->with($subject, $comment);
+                    // return redirect('/superuser/UserProvisioning');
                 }
 
 

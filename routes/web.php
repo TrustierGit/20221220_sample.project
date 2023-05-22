@@ -17,7 +17,7 @@ use Carbon\Carbon;
 |
 */
 Route::get('/', function () {
-    return redirect('/login',);
+    return redirect('/login');
 });
 
 
