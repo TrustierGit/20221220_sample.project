@@ -22,21 +22,24 @@ class NotificationController extends Controller
      * 
      */
 
+
     public function index()
     {
         
        $user_domain=Auth::user()->domain_organization;
-    //    $d_name =  DB::table('organizations')->where('domain_organization' ,'=',$user_domain)->first();
+            $all_notifications =  DB::table('notifications')
+                                ->where('flag_display', '=', 1)
+                                ->orderBy('date_post', 'desc')
+                                ->paginate(config('maintenance.info_page_count')); 
 
-       return view('dashboard', [
-            'notifications' =>  DB::table('notifications')
-                                    ->where('flag_display', '=', 1)
-                                    ->where('domain_organization' ,'=',$user_domain)    // ドメインでの絞り込み
-                                    ->orderBy('date_post', 'desc')
-                                    ->paginate(config('maintenance.info_page_count')),
-            // 'user_organaization' => $d_name->name_organization,            
-        ]);
-                
+
+                $notifications = DB::table('notifications')
+                                ->where('flag_display', '=', 1)
+                                ->where('domain_organization' ,'=',$user_domain)    // ドメインでの絞り込み
+                                ->orderBy('date_post', 'desc')
+                                ->paginate(config('maintenance.info_page_count')); 
+
+                return view('dashboard', ['notifications'=>$notifications,'all_notifications'=>$all_notifications]);               
             
     }
 

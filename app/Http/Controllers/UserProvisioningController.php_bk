@@ -50,6 +50,13 @@ class UserProvisioningController extends Controller
                                     ->where('flag_delete','=','0')
                                     ->orderByRaw('name_organization asc')->get();
                 return view ('super.csv_uploader',compact('organizations'));
+
+                // $mode_admins = User::select('mode_admin')->get();
+                // $selects =array(
+                //     'organizations' => $organizations,
+                //     'mode_admins' =>$mode_admins
+                // );
+                // return view ('super.csv_uploader',['selects' => $selects]);
                 
             }
 
@@ -61,54 +68,59 @@ class UserProvisioningController extends Controller
                     $select_organization = $rq->domain_organization;
                     $mode_admin = $rq->mode_admin;
 
-                            if($rq->file('csv')->getClientOriginalExtension() == "csv") {
+                    // $message ='トランザクションスタート....'.config('maintenance.user_eol');
+                    // DB::transaction(function (Request $request) {
 
-                                        // CSV ファイル保存
-                                        $tmpname = "CSVUP_".$this->upload_date.".".$rq->file('csv')->guessExtension(); //TMPファイル名
-                                        $rq->file('csv')->move(public_path()."/csv/tmp",$tmpname);
-                                        $tmppath = public_path()."/csv/tmp/".$tmpname;
-                                        list($csvArray,$count) = $this->MakeArray($tmppath);
-                                            foreach ($csvArray as $key => $value) {
-                                                if(!($value['domain_organization'] == $select_organization && $value['mode_admin'] == $mode_admin)){
-                                                    $message .= "ファイルの保存に失敗しました。　記載内容を確認してください。";
-                                                    return redirect('/superuser/UserProvisioning')->with('error',$message);
-                                                }
-                                            }                                       
-                                            // Goodby CSVの設定
-                                            $datalist = $this->goodby($tmppath);
-                                                                 //DBへupsert
-                                                                 try{
-                                                                    // 処理
-                                                                    DB::transaction(function(){
-
-                                                                    });
-                                                                    $this->softDelete($select_organization,$mode_admin);
-                                                                    $count ='0';
-                                                                    foreach($datalist as $row){
-                                                                        // 各データ取り出し
-                                                                        $csv_user = $this->get_csv_user($row);
-                                                                        // 1行ずつDBへの登録
-                                                                            User::upsert($csv_user,['email']);
-                                                                    $count++;
-                                                                    }    
-                                                                    //     ４．DEL 論理削除を一括デリート                                   
-                                                                    $delete_count = $this->delete($select_organization,$mode_admin);
-                                                                    $subject = "status";
-                                                                    $message .= $count."件取り込み、".$delete_count."件削除しました";
-                                                                }catch (\Exception $e) {
-                                                                    $message .= '登録に失敗しました' ;
-                                                                    $subject ="error";
-                                                                }                                                     
-                                                    
-                                            // TMPファイル削除
-                                            unlink($tmppath);  
-                                            return redirect('/superuser/UserProvisioning')->with($subject,$message);
+                    //     １．自治体絞り込み　★管理コンソール側から自治体指定
+                    //     ２．UPD 一回全部論理削除（一般ユーザ）
+                    $this->softDelete($select_organization,$mode_admin);
+                    //     ３．ファイル保存
+                    if($rq->file('csv')->getClientOriginalExtension() == "csv") {
+                                $tmpname = "CSVUP_".$this->upload_date.".".$rq->file('csv')->guessExtension(); //TMPファイル名
+                                $rq->file('csv')->move(public_path()."/csv/tmp",$tmpname);
+                                $tmppath = public_path()."/csv/tmp/".$tmpname;
+                    }else{
+                        $message .= 'ファイルの保存に失敗しました。ファイル形式を確認してください。';
+                        return redirect('/superuser/UserProvisioning')->with('error',$message);
                         
-                                            // トランザクションエンド
-                            }else{
-                                $message .= "ファイルの保存に失敗しました。　拡張子を確認してください。";
-                                return redirect('/superuser/UserProvisioning')->with('error',$message);
-                            }
+                    }
+                    //DBへupsert
+                    //  try{
+                    // Goodby CSVの設定
+                    $datalist = $this->goodby($tmppath);
+                    $count ='0';
+                    foreach($datalist as $row){
+                        // 各データ取り出し
+                        $csv_user = $this->get_csv_user($row);
+                        // 1行ずつDBへの登録
+                        if($row['domain_organization'] == $select_organization && $row['mode_admin'] == $mode_admin){
+                            User::upsert($csv_user,['email']);
+                        }else{
+                            $message .= 'ファイルの保存に失敗しました。ファイル形式を確認してください。';
+                            break 1;
+                        }                            
+                    $count++;
+                    }    
+                    //                         //     ４．DEL 論理削除を一括デリート                                   
+                    //                         $delete_count = $this->delete($select_organization,$mode_admin);
+                    //                         $subject = "status";
+                    //                         $message .= $count."件取り込み、".$delete_count."件削除しました";
+                    //                     }catch (\Exception $e) {
+                    //                         // $message .= '登録に失敗しました' .$e->getMessage();
+                    //                         $message .= '登録に失敗しました' ;
+                    //                         $subject ="error";
+                    //                     }                                                     
+                    //         }else{
+                    //             $message .= "取り込みエラー：ファイル形式を確認してください。";
+                    //             $subject = "error";
+                            
+                         
+                    // TMPファイル削除
+                    // unlink($tmppath);  
+                    // return redirect('/superuser/UserProvisioning')->with($subject,$message);
+                    // // return redirect('/superuser/UserProvisioning');
+
+                    // トランザクションエンド
                 }
 
                 public function get_csv_user($row)
@@ -127,11 +139,15 @@ class UserProvisioningController extends Controller
 
                 public function softDelete($select_organization,$mode_admin){
                     try{
+                        // $this->message .= '全ユーザー論理削除中....'.config('maintenance.user_eol');
                       DB::table('users')
+                    //   ★自治体指定方法を変更要
                             ->where('domain_organization', '=', $select_organization)
                             ->where('mode_admin', '=', $mode_admin)
                             ->update(['flag_delete' => 1]);
+                        // $this->message .= 'ファイル読み込み中....'.config('maintenance.user_eol');
                     }catch (\Exception $e) {
+                        // $this->message .= '論理削除に失敗しました' .config('maintenance.user_eol').$e->getMessage();
                     }
                 }
 
@@ -162,6 +178,7 @@ class UserProvisioningController extends Controller
                 }
 
                 public function delete($select_organization,$mode_admin){
+                    try{
                         // $this->message .= '全ユーザー論理削除中....'.config('maintenance.user_eol');
                       $delete_count = DB::table('users')
                                         ->where('domain_organization', '=', $select_organization)
@@ -170,6 +187,10 @@ class UserProvisioningController extends Controller
                                         ->delete();
                                                         
                       return $delete_count;
+                        // $this->message .= 'ファイル読み込み中....'.config('maintenance.user_eol');
+                    }catch (\Exception $e) {
+                        // $this->message .= '論理削除に失敗しました' .config('maintenance.user_eol').$e->getMessage();
+                    }
                 }
 
                 public function MakeArray($tmppath){

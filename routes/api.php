@@ -22,3 +22,5 @@ use App\Http\Controllers\AutoReservationController;
 
 Route::middleware(['auth:sanctum','abilities:super_user'])->get('/MakeFileAPI',[FileExportController::class,'FileExport']);
 Route::middleware(['auth:sanctum','abilities:super_user'])->get('/AutoReservationAPI',[AutoReservationController::class,'AutoReservation']);
+
+

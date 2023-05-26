@@ -2,8 +2,15 @@
 <x-app-layout>
   <div class="container px-5 py-4 mx-auto">
     <h1 class="text-2xl font-medium title-font text-gray-900 pt-12">■ダッシュボード</h1> 
+    @can('user')
     <div class="font-bold text-3xl text-center pb-4">― {{Auth::user()->organization->name_organization}} お知らせ　―</div>
-  
+    @endcan
+    @can('admin')
+    <div class="font-bold text-3xl text-center pb-4">― {{Auth::user()->organization->name_organization}} お知らせ　―</div>
+    @endcan
+    @can('superuser')
+    <div class="font-bold text-3xl text-center pb-4">― お知らせ　―</div>
+    @endcan
     <div class="p-6 overflow-y:scroll rounded">
   <section class="text-gray-600 body-font">
   <div class="container px-5 py-0 mx-auto">
@@ -24,10 +31,10 @@
           </tr>
         </thead>
         <tbody>
+        @can('user')
         @foreach($notifications as $notification)
           <tr>
             <td class="px-4 py-3 border border-slate-400 bg-white text-lg">{{$notification->date_post}}</td>
-            <!-- <td class="px-4 py-3 border border-slate-400 bg-white text-lg">{{$notification->text_title}}</td> -->
             <td class="px-4 py-3 border border-slate-400 bg-white ">
               @if($notification->text_title === 'Info')
                 <span class="bg-green-700 text-white px-3 py-2 rounded">お知らせ</span>
@@ -35,10 +42,40 @@
                 <span class="bg-red-700 text-white p-2 rounded">障害情報</span>
               @endif
             </td>
-            <!-- <td class="px-4 py-3 border border-slate-400 bg-white text-lg">{!!nl2br(e(\Illuminate\Support\Str::limit($notification->text_message,20,'　...　')))!!}</td> -->
             <td style="word-wrap:break-word;" class="px-4 py-3 border border-slate-400 bg-white text-left">{!!nl2br(e($notification->text_message))!!}</td>
           </tr>
         @endforeach
+        @endcan
+        @can('admin')
+        @foreach($notifications as $notification)
+          <tr>
+            <td class="px-4 py-3 border border-slate-400 bg-white text-lg">{{$notification->date_post}}</td>
+            <td class="px-4 py-3 border border-slate-400 bg-white ">
+              @if($notification->text_title === 'Info')
+                <span class="bg-green-700 text-white px-3 py-2 rounded">お知らせ</span>
+                @else
+                <span class="bg-red-700 text-white p-2 rounded">障害情報</span>
+              @endif
+            </td>
+            <td style="word-wrap:break-word;" class="px-4 py-3 border border-slate-400 bg-white text-left">{!!nl2br(e($notification->text_message))!!}</td>
+          </tr>
+        @endforeach
+        @endcan
+        @can('superuser')
+        @foreach($all_notifications as $notification)
+          <tr>
+            <td class="px-4 py-3 border border-slate-400 bg-white text-lg">{{$notification->date_post}}</td>
+            <td class="px-4 py-3 border border-slate-400 bg-white ">
+              @if($notification->text_title === 'Info')
+                <span class="bg-green-700 text-white px-3 py-2 rounded">お知らせ</span>
+                @else
+                <span class="bg-red-700 text-white p-2 rounded">障害情報</span>
+              @endif
+            </td>
+            <td style="word-wrap:break-word;" class="px-4 py-3 border border-slate-400 bg-white text-left">{!!nl2br(e($notification->text_message))!!}</td>
+          </tr>
+        @endforeach
+        @endcan
         </tbody>
       </table>
       <br>

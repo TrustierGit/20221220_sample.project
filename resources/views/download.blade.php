@@ -7,9 +7,16 @@
               <section class="text-gray-600 body-font">
                 
           <div class="container px-5 py-5 mx-auto">
+          @can('admin')
           <div class="text-3xl text-center">
                  ― {{Auth::user()->organization->name_organization}} 予約履歴ダウンロード　―
           </div>
+          @endcan
+          @can('superuser')
+          <div class="text-3xl text-center">
+              ― 予約履歴ダウンロード　―
+          </div>
+          @endcan
             <div class="text-2xl flex flex-auto">
                 <div class="block ml-6 mr-6">
                                 <form  method="get" action=/admin/export>

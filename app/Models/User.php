@@ -61,4 +61,33 @@ class User extends Authenticatable
 
         }
 
+        public function csvHeader(): array
+        {
+            return [
+                'email',
+                'domain_organization',
+                'mode_reserve',
+                'name',
+                'password',
+                'mode_admin',
+                'flag_delete',
+                'email_verified_at',
+            ];
+        }
+    
+        // public function getCsvData(): \Illuminate\Support\Collection
+        // {
+        //     $data = DB::table('items')->get();
+        //     return $data;
+        // }
+        // public function insertRow($row): array
+        // {
+        //     return [
+        //         $row->id,
+        //         $row->name,
+        //         $row->category_id,
+        //         $row->description,
+        //     ];
+        // }
+
 }
