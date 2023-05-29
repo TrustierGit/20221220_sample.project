@@ -23,9 +23,16 @@
                     </x-nav-link>
                 </div>
                 @endcan
-                @can('admin-higher')
+                @can('admin')
                 <div class="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex">
                     <x-nav-link :href="route('notification.create')" :active="request()->routeIs('notification.create')">
+                        {{ __('お知らせ投稿') }}
+                    </x-nav-link>
+                </div>
+                @endcan
+                @can('superuser')
+                <div class="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex">
+                    <x-nav-link :href="route('super.create')" :active="request()->routeIs('super.create')">
                         {{ __('お知らせ投稿') }}
                     </x-nav-link>
                 </div>

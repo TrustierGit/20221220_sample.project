@@ -25,7 +25,6 @@ Route::get('/dashboard','App\Http\Controllers\NotificationController@index')->mi
 
 
 Route::prefix('user')->middleware(['auth'])->middleware('can:user')->group(function(){
-
     Route::get('/reservation_list','App\Http\Controllers\ReservationController@show')->name('reservation');
     Route::post('/reservation_list','App\Http\Controllers\ReservationController@switch')->name('switch');
     Route::get('/download_link','App\Http\Controllers\ReservationController@download_link')->name('download_link');
@@ -39,6 +38,7 @@ Route::prefix('admin')->middleware(['auth'])->middleware('can:admin')->group(fun
 });
 
 Route::prefix('admin')->middleware(['auth'])->middleware('can:admin-higher')->group(function(){
+    
     Route::get('/news', 'App\Http\Controllers\NotificationController@show')->name('notification.create');
     
     Route::get('/notification_new', 'App\Http\Controllers\NotificationController@create')->name('notification.new');
@@ -62,11 +62,16 @@ Route::prefix('admin')->middleware(['auth'])->middleware('can:admin-higher')->gr
 Route::prefix('superuser')->middleware(['auth'])->middleware('can:superuser')->group(function(){
     Route::get('/ResetKey', 'App\Http\Controllers\MakeApiKeyController@ShowAPIKey')->name('ShowAPIKey');
     Route::post('/ResetKey', 'App\Http\Controllers\MakeApiKeyController@ResetKey')->name('ResetKey');
-    // Route::get('/download', 'App\Http\Controllers\ReservationController@lists_for_super')->name('super.reservation_lists');
     Route::get('/export', 'App\Http\Controllers\ReservationController@super_export');
-    // Route::get('/hoge', 'App\Http\Controllers\UserProvisioningController@UserProvisioning');
     Route::get('/UserProvisioning', 'App\Http\Controllers\UserProvisioningController@csv_uploader')->name('UserProvisioning');;
     Route::post('/UserProvisioning', 'App\Http\Controllers\UserProvisioningController@upload_regist');
+    Route::get('/news', 'App\Http\Controllers\NotificationController@show_super')->name('super.create');
+    Route::get('/notification_new', 'App\Http\Controllers\NotificationController@create_super')->name('super.new');
+    Route::post('/notification_new', 'App\Http\Controllers\NotificationController@store_super')->name('super.store');
+    Route::get('/edit/{id}', 'App\Http\Controllers\NotificationController@edit_super')->name('super.edit');
+    Route::post('/edit/{id}', 'App\Http\Controllers\NotificationController@update_super')->name('super.update');
+    Route::get('/delete/{id}', 'App\Http\Controllers\NotificationController@delete_super')->name('super.delete');
+    Route::post('/delete/{id}', 'App\Http\Controllers\NotificationController@remove_super')->name('super.remove');
 
     
 });

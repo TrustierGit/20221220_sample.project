@@ -21,6 +21,7 @@
           <col style="width:15%;">
           <col style="width:15%;">
           <col style="width:70%;">
+          
        </colgroup>
 
        <thead>

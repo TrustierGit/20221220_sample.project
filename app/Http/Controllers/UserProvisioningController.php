@@ -139,7 +139,6 @@ class UserProvisioningController extends Controller
                 public function goodby($tmppath){
                     $config_in = new LexerConfig();
                     $config_in
-                        // ->setFromCharset("SJIS-win")
                         ->setFromCharset("UTF-8")//SJISだと日本語読み込み時に文字化け
                         ->setToCharset("UTF-8") // CharasetをUTF-8に変換
                         ->setIgnoreHeaderLine(true) //CSVのヘッダーを無視
@@ -162,7 +161,6 @@ class UserProvisioningController extends Controller
                 }
 
                 public function delete($select_organization,$mode_admin){
-                        // $this->message .= '全ユーザー論理削除中....'.config('maintenance.user_eol');
                       $delete_count = DB::table('users')
                                         ->where('domain_organization', '=', $select_organization)
                                         ->where('mode_admin', '=',$mode_admin)
