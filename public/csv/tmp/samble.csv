@@ -1,7 +1,0 @@
-email,domain_organization,mode_reserve,name,password,mode_admin,flag_delete,email_verified_at
-test1@marumaru.co.jp,marumaru.co.jp,1,鈴木一郎,password,0,0
-test2@marumaru.co.jp,marumaru.co.jp,1,山田二郎,password,0,0
-test3@marumaru.co.jp,marumaru.co.jp,1,佐藤三郎,password,0,0
-test4@marumaru.co.jp,marumaru.co.jp,1,伊藤四郎,password,0,0
-test5@marumaru.co.jp,marumaru.co.jp,1,加藤五郎,password,0,0
-

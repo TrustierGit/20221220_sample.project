@@ -39,7 +39,6 @@ class UserProvisioningController extends Controller
         'password',
         'mode_admin',
         'flag_delete',
-        'email_verified_at',
     ];
 
    
