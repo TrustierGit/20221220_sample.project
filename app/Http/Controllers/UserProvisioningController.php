@@ -78,20 +78,32 @@ class UserProvisioningController extends Controller
                                                                  //DBへupsert
                                                                  try{
                                                                     // 処理
-                                                                    DB::transaction(function(){
-
+                                                                    DB::transaction(function() use ($select_organization,$mode_admin,$datalist){
+                                                                        DB::table('users')
+                                                                            ->where('domain_organization', '=', $select_organization)
+                                                                            ->where('mode_admin', '=', $mode_admin)
+                                                                            ->update(['flag_delete' => 1]);
+                                                                        // $this->softDelete($select_organization,$mode_admin);
+                                                                        $count ='0';
+                                                                        foreach($datalist as $row){
+                                                                            // 各データ取り出し
+                                                                            $csv_user = array(
+                                                                                'email'=> $row[0],
+                                                                                'domain_organization'=> $row[1],
+                                                                                'mode_reserve'=> $row[2],
+                                                                                'name'=> trim($row[3]),
+                                                                                'password'=> Hash::make(trim($row[4])),
+                                                                                'mode_admin'=> $row[5],
+                                                                                'flag_delete'=> $row[6],
+                                                                            );;
+                                                                            // 1行ずつDBへの登録
+                                                                                User::upsert($csv_user,['email']);
+                                                                        $count++;
+                                                                        }    
                                                                     });
-                                                                    $this->softDelete($select_organization,$mode_admin);
-                                                                    $count ='0';
-                                                                    foreach($datalist as $row){
-                                                                        // 各データ取り出し
-                                                                        $csv_user = $this->get_csv_user($row);
-                                                                        // 1行ずつDBへの登録
-                                                                            User::upsert($csv_user,['email']);
-                                                                    $count++;
-                                                                    }    
-                                                                    //     ４．DEL 論理削除を一括デリート                                   
-                                                                    $delete_count = $this->delete($select_organization,$mode_admin);
+                                                                    
+                                                                    //  論理削除を一括デリート   
+                                                                    $delete_count = $this->delete($select_organization,$mode_admin);                                
                                                                     $subject = "status";
                                                                     $message .= $count."件取り込み、".$delete_count."件削除しました";
                                                                 }catch (\Exception $e) {
@@ -108,30 +120,6 @@ class UserProvisioningController extends Controller
                                 $message .= "ファイルの保存に失敗しました。　拡張子を確認してください。";
                                 return redirect('/superuser/UserProvisioning')->with('error',$message);
                             }
-                }
-
-                public function get_csv_user($row)
-                {
-                    $user = array(
-                        'email'=> $row[0],
-                        'domain_organization'=> $row[1],
-                        'mode_reserve'=> $row[2],
-                        'name'=> trim($row[3]),
-                        'password'=> Hash::make(trim($row[4])),
-                        'mode_admin'=> $row[5],
-                        'flag_delete'=> $row[6],
-                    );
-                    return $user;
-                }
-
-                public function softDelete($select_organization,$mode_admin){
-                    try{
-                      DB::table('users')
-                            ->where('domain_organization', '=', $select_organization)
-                            ->where('mode_admin', '=', $mode_admin)
-                            ->update(['flag_delete' => 1]);
-                    }catch (\Exception $e) {
-                    }
                 }
 
 
@@ -197,4 +185,3 @@ class UserProvisioningController extends Controller
 
                 
 }
-
